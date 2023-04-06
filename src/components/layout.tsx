@@ -111,6 +111,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             fontSize="30"
             color="white"
             as={AiFillLinkedin}
+            _hover={{
+              bg: '#D8CBB8',
+              color: '#451919',          
+            }}
           />
         </Link>
         <Link href="https://gitlab.com/kozmary">
@@ -119,6 +123,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             fontSize="30"
             color="white"
             as={AiFillGitlab}
+            _hover={{
+              bg: '#D8CBB8',
+              color: '#451919',          
+            }}
           />
         </Link>
         <Link href="mailto:kozmary@gmail.com">
@@ -127,6 +135,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             fontSize="30"
             color="white"
             as={AiOutlineMail}
+            _hover={{
+              bg: '#D8CBB8',
+              color: '#451919',          
+            }}
           />
         </Link>
       </Flex>
