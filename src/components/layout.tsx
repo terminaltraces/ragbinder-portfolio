@@ -17,7 +17,6 @@ import {
   FiMenu,
 } from 'react-icons/fi';
 import { ReactText } from 'react';
-import { link } from 'fs';
 
 interface NavigationItemProps {
   name: string;
@@ -53,7 +52,12 @@ export default function Layout({ children }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Image src="/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png" fit={{base: "cover", md: "fill"}} w="100vw" h={{base: "165px", md: "265px"}} ml={{ base:0, md:100}}/>
+      <Image 
+        src="/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png" 
+        fit={{base: "cover", md: "fill"}} 
+        w="100vw" 
+        h={{base: "165px", md: "265px"}} 
+        ml={{ base:0, md:100}}/>
       <Box 
         ml={{ base: 0, md: 72 }} 
         mr={{ base: 0, md: 12 }} 
@@ -81,7 +85,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {...rest}>
       <Flex flexDir="column" mt="68" mx="8">
         <Link href="/" color="white">
-          <Text fontSize="2xl" color="white" fontFamily="monospace" fontWeight="bold" mb="5px">Jordan Kozmary,</Text>
+          <Text fontSize="3xl" color="white" fontFamily="monospace" fontWeight="bold" mb="5px">Jordan Kozmary,</Text>
           <Text fontSize="xl" color="white" fontFamily="monospace" fontWeight="bold" >Game Developer</Text>
           <hr style={{border: "1px solid white", width: "100px", marginTop: "15px", marginBottom: "10px"}}/>
         </Link>
