@@ -6,6 +6,7 @@ import {
   Flex,
   Image,
   Link,
+  Icon,
   Text,
   Drawer,
   DrawerContent,
@@ -13,9 +14,8 @@ import {
   BoxProps,
   FlexProps,
 } from '@chakra-ui/react';
-import {
-  FiMenu,
-} from 'react-icons/fi';
+import { AiFillLinkedin, AiFillGitlab, AiOutlineMail } from 'react-icons/ai';
+import { FiMenu } from 'react-icons/fi';
 import { ReactText } from 'react';
 
 interface NavigationItemProps {
@@ -23,11 +23,11 @@ interface NavigationItemProps {
   link: string;
 }
 const NavigationItems: Array<NavigationItemProps> = [
-  { name: 'Resume', link: '/resume' },
+  { name: 'Resume', link: '/sjk-resume.pdf' },
   { name: 'Experience', link: '/experience' },
   { name: 'Projects', link: '/projects' },
   { name: 'Writing', link: '/writing'},
-  { name: 'Contact', link: '/contact'},
+  { name: 'Contact', link: 'mailto:kozmary@gmail.com'},
 ];
 
 export default function Layout({ children }) {
@@ -79,23 +79,57 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
       bg='#451919'
-      w={{ base: 'full', md: 60 }}
+      w={{ base: 'full', md: 64 }}
       pos="fixed"
       h="full"
       {...rest}>
-      <Flex flexDir="column" mt="68" mx="8">
+      <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt="68" mx="8">
         <Link href="/" color="white">
-          <Text fontSize="3xl" color="white" fontFamily="monospace" fontWeight="bold" mb="5px">Jordan Kozmary,</Text>
-          <Text fontSize="xl" color="white" fontFamily="monospace" fontWeight="bold" >Game Developer</Text>
-          <hr style={{border: "1px solid white", width: "100px", marginTop: "15px", marginBottom: "10px"}}/>
+          <Text fontSize="4xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700" mb="5px">Jordan Kozmary,</Text>
+          <Text fontSize="2xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700">Game Developer.</Text>
+          <hr style={{border: "1px solid white", width: "100px", marginTop: "35px", marginBottom: "25px"}}/>
         </Link>
-        <CloseButton display={{ base: 'flex', md: 'none' }} color="white" onClick={onClose} />
+        <CloseButton 
+          display={{ base: 'flex', md: 'none' }} 
+          color="white" 
+          onClick={onClose} 
+          _hover={{
+            bg: '#D8CBB8',
+            color: '#451919',          
+          }}
+        />
       </Flex>
       {NavigationItems.map((nav) => (
         <NavItem key={nav.name} link={nav.link}>
           {nav.name}
         </NavItem>
       ))}
+      <Flex flexDir="row" mt="5vh" mx="8" mb="8">
+        <Link href="https://www.linkedin.com/in/kozmary/">
+          <Icon
+            mr="4"
+            fontSize="30"
+            color="white"
+            as={AiFillLinkedin}
+          />
+        </Link>
+        <Link href="https://gitlab.com/kozmary">
+          <Icon
+            mr="4"
+            fontSize="30"
+            color="white"
+            as={AiFillGitlab}
+          />
+        </Link>
+        <Link href="mailto:kozmary@gmail.com">
+          <Icon
+            mr="4"
+            fontSize="30"
+            color="white"
+            as={AiOutlineMail}
+          />
+        </Link>
+      </Flex>
     </Box>
   );
 };
@@ -106,7 +140,7 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ link, children, ...rest }: NavItemProps) => {
   return (
-    <Link href={link} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={link} style={{ fontFamily: 'dutch-mediaeval-pro', fontSize: "x-large", fontWeight: "700", textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         color="white"
@@ -116,7 +150,8 @@ const NavItem = ({ link, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          textDecoration:"underline"
+          bg: '#D8CBB8',
+          color: '#451919',          
         }}
         {...rest}>
         {children}
@@ -144,10 +179,14 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         onClick={onOpen}
         aria-label="open menu"
         icon={<FiMenu />}
+        _hover={{
+          bg: '#D8CBB8',
+          color: '#451919',          
+        }}
       />
-      <Link fontSize="2xl" color="white" ml="8" fontFamily="monospace" fontWeight="bold" href="/">
-        Jordan Kozmary <br/> Game Developer
-      </Link>
+      <Link href="/" color="white">
+          <Text fontSize={{base: "xl", sm: "2xl"}} color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700" ml="25px">Jordan Kozmary, Game Developer.</Text>
+        </Link>
     </Flex>
   );
 };
