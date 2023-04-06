@@ -1,6 +1,11 @@
 # ragbinder.github.io
 Personal portfolio website and development blog.
 
+# Credits
+Thank you to the following resources for making this project possible:
+* [Chakra Templates](https://chakra-templates.dev/)
+* [React Icons](https://react-icons.github.io/react-icons)
+
 ## GitHub Codespaces ♥️ Next.js
 
 Welcome to your shiny new Codespace running Next.js! We've got everything fired up and running for you to explore Next.js.
