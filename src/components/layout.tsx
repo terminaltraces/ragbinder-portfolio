@@ -1,15 +1,14 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import {
   IconButton,
   Box,
   CloseButton,
   Flex,
-  HStack,
-  useColorModeValue,
+  Image,
   Link,
+  Text,
   Drawer,
   DrawerContent,
-  Text,
   useDisclosure,
   BoxProps,
   FlexProps,
@@ -18,16 +17,18 @@ import {
   FiMenu,
 } from 'react-icons/fi';
 import { ReactText } from 'react';
+import { link } from 'fs';
 
 interface NavigationItemProps {
   name: string;
+  link: string;
 }
 const NavigationItems: Array<NavigationItemProps> = [
-  { name: 'Resume'},
-  { name: 'Experience'},
-  { name: 'Projects'},
-  { name: 'Writing'},
-  { name: 'Contact'},
+  { name: 'Resume', link: '/resume' },
+  { name: 'Experience', link: '/experience' },
+  { name: 'Projects', link: '/projects' },
+  { name: 'Writing', link: '/writing'},
+  { name: 'Contact', link: '/contact'},
 ];
 
 export default function Layout({ children }) {
@@ -51,11 +52,13 @@ export default function Layout({ children }) {
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
+      <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
+      <Image src="/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png" fit={{base: "cover", md: "fill"}} w="100vw" h={{base: "165px", md: "265px"}} ml={{ base:0, md:100}}/>
       <Box 
         ml={{ base: 0, md: 72 }} 
         mr={{ base: 0, md: 12 }} 
-        mt={{ base: 0, md: 10 }} 
+        position="relative"
+        top={{base: "25px", md: "50px"}}
         p="4" 
         bg="white">
         {children}
@@ -71,21 +74,22 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
-      transition="3s ease"
       bg='#451919'
       w={{ base: 'full', md: 60 }}
       pos="fixed"
       h="full"
       {...rest}>
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" color="white" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+      <Flex flexDir="column" mt="68" mx="8">
+        <Link href="/" color="white">
+          <Text fontSize="2xl" color="white" fontFamily="monospace" fontWeight="bold" mb="5px">Jordan Kozmary,</Text>
+          <Text fontSize="xl" color="white" fontFamily="monospace" fontWeight="bold" >Game Developer</Text>
+          <hr style={{border: "1px solid white", width: "100px", marginTop: "15px", marginBottom: "10px"}}/>
+        </Link>
+        <CloseButton display={{ base: 'flex', md: 'none' }} color="white" onClick={onClose} />
       </Flex>
-      {NavigationItems.map((link) => (
-        <NavItem key={link.name}>
-          {link.name}
+      {NavigationItems.map((nav) => (
+        <NavItem key={nav.name} link={nav.link}>
+          {nav.name}
         </NavItem>
       ))}
     </Box>
@@ -94,10 +98,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
 interface NavItemProps extends FlexProps {
   children: ReactText;
+  link: string;
 }
-const NavItem = ({ children, ...rest }: NavItemProps) => {
+const NavItem = ({ link, children, ...rest }: NavItemProps) => {
   return (
-    <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={link} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         color="white"
@@ -123,28 +128,22 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
+      px={{ base: 4, md: 24 }}
       height="20"
       alignItems="center"
       bg='#451919'
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      justifyContent="flex-start"
       {...rest}>
       <IconButton
-        display={{ base: 'flex', md: 'none' }}
-        onClick={onOpen}
         variant="outline"
-        bg="white"
+        color="white"
+        onClick={onOpen}
         aria-label="open menu"
         icon={<FiMenu />}
       />
-      <Text
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="2xl"
-        color="white"
-        fontFamily="monospace"
-        fontWeight="bold">
-        Logo
-      </Text>
+      <Link fontSize="2xl" color="white" ml="8" fontFamily="monospace" fontWeight="bold" href="/">
+        Jordan Kozmary <br/> Game Developer
+      </Link>
     </Flex>
   );
 };
