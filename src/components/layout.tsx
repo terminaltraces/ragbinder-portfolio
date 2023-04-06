@@ -62,7 +62,7 @@ export default function Layout({ children }) {
         ml={{ base: 0, md: 72 }} 
         mr={{ base: 0, md: 12 }} 
         position="relative"
-        top={{base: "25px", md: "50px"}}
+        top={{base: "25px", md: "40px"}}
         p="4" 
         bg="white">
         {children}
