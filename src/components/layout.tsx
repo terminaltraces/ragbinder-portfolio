@@ -63,7 +63,10 @@ export default function Layout({ children }) {
         mr={{ base: 0, md: 12 }} 
         position="relative"
         top={{base: "25px", md: "40px"}}
-        p="4" 
+        pt="100px"
+        pl="40px"
+        pr="40px"
+        pb="50px" 
         bg="white">
         {children}
       </Box>
