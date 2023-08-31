@@ -7,6 +7,7 @@ import {
   Image,
   Link,
   Icon,
+  Stack,
   Text,
   Drawer,
   DrawerContent,
@@ -87,27 +88,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}>
       <Flex flexDir="row" justifyContent="space-between" alignItems="center" mt="68" mx="8">
-        <Link href="/" color="white">
-          <Text fontSize="4xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700" mb="5px">Jordan Kozmary,</Text>
-          <Text fontSize="2xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700">Game Developer.</Text>
+        <Stack>
+          <Link href="/" color="white">
+            <Text fontSize="4xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700" mb="5px">Jordan Kozmary,</Text>
+            <Text fontSize="2xl" color="white" fontFamily="dutch-mediaeval-pro" fontWeight="700">Game Developer.</Text>
+          </Link>
           <hr style={{border: "1px solid white", width: "100px", marginTop: "35px", marginBottom: "25px"}}/>
-        </Link>
-        <CloseButton 
-          display={{ base: 'flex', md: 'none' }} 
-          color="white" 
-          onClick={onClose} 
-          _hover={{
-            bg: '#D8CBB8',
-            color: '#451919',          
-          }}
-        />
-      </Flex>
-      {NavigationItems.map((nav) => (
-        <NavItem key={nav.name} link={nav.link}>
-          {nav.name}
-        </NavItem>
-      ))}
-      <Flex flexDir="row" mt="5vh" mx="8" mb="8">
+          <Flex flexDir="row" mt="5vh" mx="8" mb="8">
         <Link href="https://www.linkedin.com/in/kozmary/">
           <Icon
             mr="4"
@@ -145,6 +132,23 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           />
         </Link>
       </Flex>
+      <hr style={{border: "1px solid white", width: "100px", marginTop: "25px", marginBottom: "25px" }}/>
+        </Stack>
+        <CloseButton 
+          display={{ base: 'flex', md: 'none' }} 
+          color="white" 
+          onClick={onClose} 
+          _hover={{
+            bg: '#D8CBB8',
+            color: '#451919',          
+          }}
+        />
+      </Flex>
+      {NavigationItems.map((nav) => (
+        <NavItem key={nav.name} link={nav.link}>
+          {nav.name}
+        </NavItem>
+      ))}
     </Box>
   );
 };
