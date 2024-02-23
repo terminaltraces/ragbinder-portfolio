@@ -3,13 +3,11 @@ import {
   Heading,
   Text,
   Card,
-  CardHeader,
-  SimpleGrid,
+  VStack,
+  StackDivider,
   CardBody,
-  CardFooter,
   Image,
   Stack,
-  Button,
 } from "@chakra-ui/react";
 import experience from "../lib/data/experience.json";
 
@@ -24,7 +22,6 @@ const ExperienceComponent = (
       direction={{ base: "column", sm: "row" }}
       overflow="hidden"
       variant="unstyled"
-      pb="16"
     >
       <Image
         objectFit="cover"
@@ -32,7 +29,7 @@ const ExperienceComponent = (
         src={gameImage}
         alt="Caffe Latte"
       />
-      <Stack pl="6">
+      <Stack pt="4" pl="8">
         <CardBody>
           <Heading
             fontFamily="ingra"
@@ -55,7 +52,9 @@ const ExperienceComponent = (
           >
             {studio}
           </Heading>
-          <Text py="2">{gameDescription}</Text>
+          <Text fontFamily="ingra" fontWeight="400" fontStyle="normal" py="2">
+            {gameDescription}
+          </Text>
         </CardBody>
       </Stack>
     </Card>
@@ -63,7 +62,6 @@ const ExperienceComponent = (
 };
 
 const ExperiencePage: NextPage = () => {
-  console.log(experience);
   return (
     <>
       <Heading
@@ -77,14 +75,16 @@ const ExperiencePage: NextPage = () => {
       >
         Titles I've Worked On
       </Heading>
-      {experience.map((job) => {
-        return ExperienceComponent(
-          job.gameTitle,
-          job.studio,
-          job.gameDescription,
-          job.gameImage
-        );
-      })}
+      <VStack divider={<StackDivider borderColor="gray.200" />} spacing={8}>
+        {experience.map((job) => {
+          return ExperienceComponent(
+            job.gameTitle,
+            job.studio,
+            job.gameDescription,
+            job.gameImage
+          );
+        })}
+      </VStack>
     </>
   );
 };
