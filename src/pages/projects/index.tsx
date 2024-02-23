@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import NextLink from "next/link";
 import {
   Heading,
   Text,
@@ -42,7 +43,7 @@ const ProjectComponent = (
             fontStyle="normal"
             color="#430707"
             mb="4"
-            as="h2"
+            as={NextLink}
             href={slugUrl}
           >
             {projectTitle}
