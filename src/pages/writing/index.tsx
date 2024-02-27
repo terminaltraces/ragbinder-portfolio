@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import NextLink from "next/link";
-import { Heading, Text, Link } from "@chakra-ui/react";
+import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import { InferGetStaticPropsType } from "next";
 import fs from "fs";
 import { serialize } from "next-mdx-remote/serialize";
@@ -49,7 +49,7 @@ const PostComponent = (post) => {
   const postDate = new Date(Date.parse(post.date)).toDateString();
 
   return (
-    <div key={post.slug}>
+    <Box pb="4" key={post.slug}>
       <Link
         fontFamily="ingra"
         fontWeight="500"
@@ -69,7 +69,7 @@ const PostComponent = (post) => {
       >
         {postDate}
       </Text>
-    </div>
+    </Box>
   );
 };
 
