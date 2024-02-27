@@ -2,6 +2,7 @@
 const nextConfig = {
   output: "export",
   images: { unoptimized: true },
+  basePath: "/nextjs-github-pages",
 };
 
 module.exports = nextConfig;

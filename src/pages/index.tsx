@@ -64,7 +64,7 @@ const IndexPage: NextPage = () => {
               <Image
                 objectFit="cover"
                 maxW={"100%"}
-                src="/images/MWII-SEASON-01-ROADMAP-004.png"
+                src="/nextjs-github-pages/images/MWII-SEASON-01-ROADMAP-004.png"
                 alt="Caffe Latte"
               />
             </CardBody>
@@ -98,7 +98,7 @@ const IndexPage: NextPage = () => {
               <Image
                 objectFit="cover"
                 maxW={"100%"}
-                src="/images/British_Museum_Royal_Game_of_Ur.png"
+                src="/nextjs-github-pages/images/British_Museum_Royal_Game_of_Ur.png"
                 alt="Caffe Latte"
               />
             </CardBody>
@@ -132,7 +132,7 @@ const IndexPage: NextPage = () => {
               <Image
                 objectFit="cover"
                 maxW={"100%"}
-                src="/images/pankaj-patel-ZV_64LdGoao-unsplash.png"
+                src="/nextjs-github-pages/images/pankaj-patel-ZV_64LdGoao-unsplash.png"
                 alt="Caffe Latte"
               />
             </CardBody>

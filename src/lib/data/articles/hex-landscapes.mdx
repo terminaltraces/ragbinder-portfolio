@@ -1,0 +1,17 @@
+---
+title: "Leveraging Unreal's Landscapes for Hex Grids"
+date: "2024-02-26"
+---
+
+# Leveraging Unreal's Landscapes for Hex Grids
+
+The terrain in the game world is represented by contiguous hexagonal tiles, placed at discrete elevation levels. The tiles are laid out in the flat-topped orientation, if you are facing along the X Axis. Because every other column of hexes is shifted up by half a hex height, the X,Y integer "coordinates" of a hex do not correspond linearly to its X,Y world position. Instead I opted to use an alternative coordinate system, called "cubic" coordinates, that uses three non-orthogonal basis vectors (Q,R,S) on the X,Y plane that allows us to maintain that property, and thus makes mathematical operations much simpler.
+
+To lay out hexagonal tiles along a 2d grid, it would be beneficial to import some sort of heightmap, so we don't have to hand-place the entire world (a daunting and pointless task). However, if we use a traditional heightmap and try to read the values into X,Y coordinates on the grid, our placed terrain would be a distorted version of the stored image (for the same reason I opted for QRS coordinates)! Rather than generating a traditional 2D heightmap in a third party tool, then hope it looks how we want it to after the distortion effect, we'll take a much simpler approach.
+
+We'll use Landscape objects, and sample the exact height of the terrain at the (X,Y) world coordinate to place individual tiles, rounding to the nearest discrete height level. This allows us to rapidly iterate on the terrain in the engine itself, simplifying the process of getting final terrain into our game.
+
+<FullWidthImage src="/nextjs-github-pages/images/unreal-landscape-hex-1.png" />
+<FullWidthImage src="/nextjs-github-pages/images/unreal-landscape-hex-2.png" />
+
+We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.
