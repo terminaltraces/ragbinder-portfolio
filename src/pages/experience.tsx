@@ -26,7 +26,7 @@ const ExperienceComponent = (
     >
       <Image
         objectFit="cover"
-        maxW={"100%"}
+        maxW={"25rem"}
         src={gameImage}
         alt="Caffe Latte"
       />
