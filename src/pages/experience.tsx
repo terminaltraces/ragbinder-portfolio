@@ -9,6 +9,7 @@ import {
   Image,
   Stack,
 } from "@chakra-ui/react";
+import Head from "next/head";
 import experience from "../lib/data/experience.json";
 
 const ExperienceComponent = (
@@ -64,6 +65,9 @@ const ExperienceComponent = (
 const ExperiencePage: NextPage = () => {
   return (
     <>
+      <Head>
+        <title>Experience | Steven Jordan Kozmary</title>
+      </Head>
       <Heading
         fontFamily="ingra"
         fontWeight="700"

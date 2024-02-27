@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import NextLink from "next/link";
+import Head from "next/head";
 import {
   Heading,
   Text,
@@ -73,6 +74,9 @@ const ProjectComponent = (
 const ProjectsPage: NextPage = () => {
   return (
     <>
+      <Head>
+        <title>Projects | Steven Jordan Kozmary</title>
+      </Head>
       <Heading
         fontFamily="ingra"
         fontWeight="700"
