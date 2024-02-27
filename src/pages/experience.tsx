@@ -1,5 +1,7 @@
 import { NextPage } from "next";
+import NextLink from "next/link";
 import {
+  Link,
   Heading,
   Text,
   Card,
@@ -66,7 +68,7 @@ const ExperiencePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Experience | Steven Jordan Kozmary</title>
+        <title>Experience | Jordan Kozmary</title>
       </Head>
       <Heading
         fontFamily="ingra"
@@ -77,9 +79,28 @@ const ExperiencePage: NextPage = () => {
         pb="6"
         as="h1"
       >
-        Titles I've Worked On
+        Industry Experience
       </Heading>
       <VStack divider={<StackDivider borderColor="gray.200" />} spacing={8}>
+        <Text>
+          I've worked on Office for iOS and Algorithmic trading software before
+          making the jump into games, and have worked on The Lamplighters'
+          League and Call of Duty: Warzone. I have a Master's degree in Computer
+          Science, and have written code that wrang every drop of performance
+          out of the supercomputers at Argonne National Laboratory. I'm very
+          comfortable working on huge, complicated, legacy codebases, or at
+          least as comfortable as one can be. I have experience with Unreal and
+          Unity - see my personal demos{" "}
+          <Link
+            as={NextLink}
+            color="#430707"
+            textDecoration={"underline"}
+            href="/projects"
+          >
+            here
+          </Link>
+          .
+        </Text>
         {experience.map((job) => {
           return ExperienceComponent(
             job.gameTitle,

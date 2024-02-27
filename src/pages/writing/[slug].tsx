@@ -20,9 +20,7 @@ const WritingPage: NextPage = ({
   return (
     <div>
       <Head>
-        <title>
-          {source.frontmatter.title as string} | Steven Jordan Kozmary
-        </title>
+        <title>{source.frontmatter.title as string} | Jordan Kozmary</title>
       </Head>
       <MDXRemote
         {...source}

@@ -75,7 +75,7 @@ const ProjectsPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Projects | Steven Jordan Kozmary</title>
+        <title>Projects | Jordan Kozmary</title>
       </Head>
       <Heading
         fontFamily="ingra"
@@ -88,7 +88,8 @@ const ProjectsPage: NextPage = () => {
       >
         Side Projects of Mine
       </Heading>
-      <VStack divider={<StackDivider borderColor="gray.200" />} spacing={8}>
+      <Text>Coming soon!</Text>
+      {/* <VStack divider={<StackDivider borderColor="gray.200" />} spacing={8}>
         {projects.map((project) => {
           return ProjectComponent(
             project.key,
@@ -99,7 +100,7 @@ const ProjectsPage: NextPage = () => {
             project.projectImage
           );
         })}
-      </VStack>
+      </VStack> */}
     </>
   );
 };

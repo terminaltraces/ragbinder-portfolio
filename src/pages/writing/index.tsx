@@ -49,7 +49,7 @@ const PostComponent = (post) => {
   const postDate = new Date(Date.parse(post.date)).toDateString();
 
   return (
-    <Box pb="4" key={post.slug}>
+    <Box pb="6" key={post.slug}>
       <Link
         fontFamily="ingra"
         fontWeight="500"
@@ -79,7 +79,7 @@ const WritingsPage: NextPage = ({
   return (
     <>
       <Head>
-        <title>Writing | Steven Jordan Kozmary</title>
+        <title>Writing | Jordan Kozmary</title>
       </Head>
       <Heading
         fontFamily="ingra"
