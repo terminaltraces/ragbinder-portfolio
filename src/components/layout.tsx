@@ -61,7 +61,7 @@ export default function Layout({ children }) {
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Image
-        src="/nextjs-github-pages/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png"
+        src="/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png"
         fit={{ base: "cover", md: "fill" }}
         w="100vw"
         h={{ base: "165px", md: "265px" }}

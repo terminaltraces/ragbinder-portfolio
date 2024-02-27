@@ -13,7 +13,7 @@ Under this scheme, moving long distances can be tedious, especially if your keyb
 Our good friend, the finite state machine, has our backs here! We can lay out precisely these interactions by defining states that map to player intent, and have some clarity about when we should discard inputs.
 
 <FullWidthImage
-  src="/nextjs-github-pages/images/state-machine.png"
+  src="/images/state-machine.png"
   alt={"A diagram of a state machine"}
 />
 
@@ -31,6 +31,6 @@ The states I'm using are:
 Maintaining a Queue and reading that sucks, since we're going to assume player intent maps to the most recent thing they did. We'll need inputs from the player pressing keys/mouse buttons, and we'll need to drain the input state machine from the game state's command queue.
 
 <FullWidthImage
-  src="/nextjs-github-pages/images/movement-in-game-022024.png"
+  src="/images/movement-in-game-022024.png"
   alt={"An image of a pawn moving across a game board"}
 />

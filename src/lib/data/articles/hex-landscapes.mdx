@@ -11,7 +11,7 @@ To lay out hexagonal tiles along a 2d grid, it would be beneficial to import som
 
 We'll use Landscape objects, and sample the exact height of the terrain at the (X,Y) world coordinate to place individual tiles, rounding to the nearest discrete height level. This allows us to rapidly iterate on the terrain in the engine itself, simplifying the process of getting final terrain into our game.
 
-<FullWidthImage src="/nextjs-github-pages/images/unreal-landscape-hex-1.png" />
-<FullWidthImage src="/nextjs-github-pages/images/unreal-landscape-hex-2.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-1.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-2.png" />
 
 We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.

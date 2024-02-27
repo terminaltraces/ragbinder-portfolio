@@ -3,14 +3,14 @@
     "key": 1,
     "gameTitle": "Call of Duty: Warzone Caldera/Warzone 2.0/Warzone (MWIII)",
     "studio": "Raven Software",
-    "gameImage": "/nextjs-github-pages/images/warzone.jpg",
+    "gameImage": "/images/warzone.jpg",
     "gameDescription": "Free to Play Cross-platform Battle Royale with up to 150 players. I personally was responsible for keeping the development environment in a working state day-to-day, maintaining a high overall development velocity for the premiere AAA live-service title. We kept players engaged and having a world of fun with our game because we were able to deliver great updates every month. I also ensure that we didn't take two steps forward and one step back when releasing the yearly title update by integrating carry-forward content, including QoL features and Microtransaction content."
   },
   {
     "key": 2,
     "gameTitle": "The Lamplighters League",
     "studio": "Harebrained Schemes",
-    "gameImage": "/nextjs-github-pages/images/lamplighters-league.jpg",
+    "gameImage": "/images/lamplighters-league.jpg",
     "gameDescription": "A tactical turn-based RPG that's different on every playthrough, with wonderfully written characters instead of disposable soldiers. Lead your team of anti-heroes to saving the world from the machinations of evil cultists! I developed CI infrastructure to speed the pace of development, and empowered our engineers to be confident their features were delivered at quality."
   }
 ]
