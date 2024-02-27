@@ -27,31 +27,12 @@ const IndexPage: NextPage = () => {
         Hey, I'm Jordan.
       </Heading>
       <Text fontFamily="ingra" fontWeight="400" fontStyle="normal" mb="8">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-        bibendum sit amet ipsum et laoreet. Etiam aliquam ullamcorper lacus, non
-        laoreet libero semper vitae. Donec ullamcorper felis elit, nec sagittis
-        neque efficitur ut. Aenean ac lobortis augue. Nulla pulvinar interdum
-        justo. Pellentesque elementum, metus quis bibendum aliquam, mauris odio
-        venenatis felis, a efficitur arcu metus scelerisque risus. Integer
-        mauris mi, gravida vel mattis ut, congue interdum purus.
-      </Text>
-      <Heading
-        fontFamily="ingra"
-        fontWeight="700"
-        fontStyle="normal"
-        color="#430707"
-        mb="4"
-      >
-        I love video games.
-      </Heading>
-      <Text fontFamily="ingra" fontWeight="400" fontStyle="normal" mb="8">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-        bibendum sit amet ipsum et laoreet. Etiam aliquam ullamcorper lacus, non
-        laoreet libero semper vitae. Donec ullamcorper felis elit, nec sagittis
-        neque efficitur ut. Aenean ac lobortis augue. Nulla pulvinar interdum
-        justo. Pellentesque elementum, metus quis bibendum aliquam, mauris odio
-        venenatis felis, a efficitur arcu metus scelerisque risus. Integer
-        mauris mi, gravida vel mattis ut, congue interdum purus.
+        I make games! I love games with deep mechanics that allow the player to
+        express themselves through emergent gameplay. If it makes sense talking
+        about a build in the context of your game, I'd probably love it. Board
+        games are a huge influence on me, from fiddly euros about trading brown
+        cubes for red ones, to cooperative horror games where a scrappy group of
+        adventurers takes on the elder gods.
       </Text>
       <SimpleGrid spacing={4} columns={{ xl: 3, lg: 2 }}>
         <Card
