@@ -1,0 +1,36 @@
+---
+title: "How to Handle a Chaotic Player (Input Stream)"
+date: "2024-02-26"
+---
+
+# How to Handle a Chaotic Player (Input Stream)
+
+At its core, this game has a strict set of rules, with one actor manipulating the game state at a time. This affords us some nice things, like making the game state deterministic, but a trade-off is it makes handling player input somewhat more complicated. We have to coerce a real-time stream of player input into actions in a turn-based system in a way that feels responsive. The player might not move forward immediately when they tap W, but only when it is their turn. This leaves a window where the player can enter a few inputs, and we have to decide what to do with them.
+
+Actors that are included in the turn order store one command, to be executed when it is their turn to act. This works fine for NPC pawns, that run their AI script each time they need to decide what to do, but it feels bad for players when you tap the W key three times, but only go up twice. This happens because one of the W keys will get effectively discarded because the keypress only generated a command to store in this command slot. To make player input feel responsive, I simply queue player inputs so that tapping keys will take you in the direction(s) you pressed, the number of times you pressed them.
+Under this scheme, moving long distances can be tedious, especially if your keyboard has somewhat heavy key presses, or if you have physical difficulty with spamming repeated inputs. The next improvement I needed was to handle the player holding down a key. On its own, this is simple enough. I could have just checked for a key being down when the pawn was active in the turn order, but had no active command yet. However, this has its own problems once you start shortening the animation time for player movement below 0.15s or so. I would often move twice when I only meant to move once. Not only that, but how should I handle transitioning between commands that come from tapped keypresses versus ones that come from key holds?
+
+Our good friend, the finite state machine, has our backs here! We can lay out precisely these interactions by defining states that map to player intent, and have some clarity about when we should discard inputs.
+
+<FullWidthImage
+  src="/images/state-machine.png"
+  alt={"A diagram of a state machine"}
+/>
+
+For further reading, I'd recommend [this chapter of Game Programming Patterns by Robert Nystrom](https://gameprogrammingpatterns.com/state.html).
+
+The states I'm using are:
+
+- Tapping Movement Inputs - The player is pressing direction keys with the desire to product an exact offset on the grid. This should show an indicator for where the player is going to move to.
+- Holding Movement Inputs - The player is holding one or more direction keys with the desire to move repeatedly in one or more directions. Movement should alternate between held directions.
+- Tapping Wait Input - The player is pressing spacebar to end their turn. This should clear the movement queue so players can "cancel" unintended moves.
+- Holding Wait Input - The player is holding spacebar to pass a large number of turns
+- Spellcast Input - The player has targeted a spell - this should take priority over movement and waits
+- Interact Input - The player has clicked interact on an item in the world. This should also take priority over movement and waits
+
+Maintaining a Queue and reading that sucks, since we're going to assume player intent maps to the most recent thing they did. We'll need inputs from the player pressing keys/mouse buttons, and we'll need to drain the input state machine from the game state's command queue.
+
+<FullWidthImage
+  src="/images/movement-in-game-022024.png"
+  alt={"An image of a pawn moving across a game board"}
+/>
