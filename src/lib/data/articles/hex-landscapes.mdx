@@ -15,3 +15,16 @@ We'll use Landscape objects, and sample the exact height of the terrain at the (
 <FullWidthImage src="/images/unreal-landscape-hex-2.png" />
 
 We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.
+
+<FullWidthImage src="/images/unreal-landscape-hex-3.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-4.png" />
+
+This terrain painting relies on setting a different physics material for each type of terrain, then grabbing the material data from the raycast that also gathers the terrain height. It's useful here to group the material to tile correlation into a tileset data asset, so we can quickly swap between different parameter sets. I also set the physics material of the tile to match the one used on the landscape, so we can hold onto the terrain type data after initial map generation is done. I use this layer to implement a dynamic flocking system, where the bases under static terrain pieces have different materials applied to better blend the pieces into the terrain they're occupying.
+
+For the purposes of this demonstration I also changed the tiles to be their own classes, so I can set parameters on the different actors and keep the individual tile classes simple. This allows me to spawn foliage on a per-tile bases - grass tiles can spawn a couple grass tufts, or forest tiles will have a chance to spawn a tree.
+
+<FullWidthImage src="/images/unreal-landscape-hex-5.png" />
+
+For future work, I'd like to investigate how I can use terrain layers to encode multiple sets of data into the same terrain object, like Foliage density or water placement. If I can't use terrain layers to hold the data I want, I could just paint another flat 2D texture, and hopefully project it over the terrain so I have some visual indication of where I'm placing terrain features.
+
+I'd also like to move the terrain tiles and foliage to Instanced Static Meshes, to improve rendering performance.
