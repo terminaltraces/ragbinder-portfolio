@@ -23,18 +23,8 @@ const CompareImage = ({
         style={{
           width: "1000px",
         }}
-        itemOne={
-          <ReactCompareSliderImage
-            src="/images/unreal-landscape-hex-3.png"
-            alt="Image one"
-          />
-        }
-        itemTwo={
-          <ReactCompareSliderImage
-            src="/images/unreal-landscape-hex-4.png"
-            alt="Image two"
-          />
-        }
+        itemOne={<ReactCompareSliderImage src={imageOne} alt={imageOneAlt} />}
+        itemTwo={<ReactCompareSliderImage src={imageTwo} alt={imageTwoAlt} />}
       />
     </VStack>
   );
