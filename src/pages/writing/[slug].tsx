@@ -6,6 +6,7 @@ import React from "react";
 import { NextPage } from "next";
 import H1 from "../../components/mdx/H1";
 import FullWidthImage from "../../components/mdx/FullWidthImage";
+import CompareImage from "../../components/mdx/CompareImage";
 import P from "../../components/mdx/P";
 import StyledLink from "../../components/mdx/StyledLink";
 import List from "../../components/mdx/List";
@@ -31,6 +32,7 @@ const WritingPage: NextPage = ({
           a: StyledLink,
           FullWidthImage,
           ul: List,
+          CompareImage,
         }}
       />
     </div>
