@@ -1,0 +1,30 @@
+---
+title: "Moving Beyond Inheritance For Items"
+date: "2024-03-26"
+---
+
+# Moving Beyond Inheritance For Items
+
+Last month, I set about hardening my player input system by separating it into a keypress handling layer, and a user intent layer. The latter I covered in a previous post, but for the keypresses themselves, I opted to use Unreal's Enhanced Input System to do the heavy lifting. While learning the system, I took some lessons from their data-driven approach to configuring user actions. They were able to set up very nuanced composite behaviors from layering a handful of primitive behaviors together.
+
+I realized that I could apply a similar approach to greatly reduce the complexity of my in-game item system. My first attempt was done in blueprints, with new item capabilities implmented in subclasses of a Base Item blueprint. Stackable items were their own subclasses, while Spellbooks were another, and Equippable items, etc. One problem that I started noticing with this approach, was that behavior that I didn't necessarily want started trickling down into subclasses below it.
+
+The bigger problem comes in when you start wanting to compose these behaviors. The design I have allows items to be used as inputs to multiple different game systems. For a fun example, let's imagine a day-old baguette. It could be used as food, which would need some implementation for edible behavior. It could be used as an offering to the harvest gods, needing some favor value baked in. And in desperate circumstances, it could even be a weapon! Now we need a new subclass that grabs all three of these behaviors, and repeat ad exponentum for every combination of systems that I end up putting in this game.
+
+Or, instead of generating a heaving mass of blueprints that I don't really want to spend a Saturday fixing if (when) I decide to change a core behavior later, I could take the Enhanced Input System's approach, and give each item an array of Item Behaviors. If I wanted an item to be equippable, I'd give it an "Equippable" attribute, which contains all the data about how the item interacts with the equipment system. If I wanted an item to provide a spell the player can cast, it gets a "Spell Provider" attribute that will generate the runtime spell for us.
+
+The "Magic" powering the Enhanced Input System's usability in the editor is the (woefully underdocumented) "EditInlineNew" Attribute that can be given to UCLASSes. What this does is allow you to create new UObject instances in the property window of the editor, and set their UProperty fields at design time. This will allow me to create items as Data Assets, rather than Data-Only Blueprints as I had been before. With a little bit of clever initialization, I can elide quite a bit of boilerplate code related to setting up custom items at runtime. Before this refactor, if I had wanted there to be a chest in the bottom of a dungeon containing a +1 flaming longsword, coated in Drow poison, and caked in rust, I would have needed to make a Blueprint that created all of that state on Begin Play, which is much more tedious than it deserves to be. Now I can just do this:
+
+<FullWidthImage src="/images/item-example-hammer.png" />
+
+To avoid a particularly nasty class of bug, I decided to separate Items into ItemArchetypes and ItemInstances. Archetypes are a collection of Read-Only Data Attributes that would contain all the design-time data needed to set up an item, and would be responsible for spawning an ItemInstance on begin play that would have all the mutable runtime state. If I didn't do this, I'd run the risk of corrupting the Data Assets if I forgot to deep-copy a pointer somewhere in C++ code. [A completely novice mistake that I'm sure the reader has never made either ;)]
+
+<FullWidthImage src="/images/item-instance-uml.png" />
+
+I'll end with some examples of the new Item Definitions:
+
+<FullWidthImage src="/images/item-16-slot-bag.png" />
+<FullWidthImage src="/images/item-spiked-hammer.png" />
+
+<FullWidthImage src="/images/item-tome-of-lightning-rift-before.png" />
+<FullWidthImage src="/images/item-tome-of-lightning-rift.png" />
