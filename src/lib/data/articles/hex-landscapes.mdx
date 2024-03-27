@@ -16,8 +16,12 @@ We'll use Landscape objects, and sample the exact height of the terrain at the (
 
 We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.
 
-<FullWidthImage src="/images/unreal-landscape-hex-3.png" />
-<FullWidthImage src="/images/unreal-landscape-hex-4.png" />
+<CompareImage
+  imageOne="/images/unreal-landscape-hex-3.png"
+  imageOneAlt="alt"
+  imageTwo="/images/unreal-landscape-hex-4.png"
+  imageTwoAlt="alt"
+/>
 
 This terrain painting relies on setting a different physics material for each type of terrain, then grabbing the material data from the raycast that also gathers the terrain height. It's useful here to group the material to tile correlation into a tileset data asset, so we can quickly swap between different parameter sets. I also set the physics material of the tile to match the one used on the landscape, so we can hold onto the terrain type data after initial map generation is done. I use this layer to implement a dynamic flocking system, where the bases under static terrain pieces have different materials applied to better blend the pieces into the terrain they're occupying.
 
