@@ -1,0 +1,30 @@
+---
+title: "What's in the Box?"
+date: "2024-03-27"
+---
+
+#What's in the Box?
+I've made a couple passes now at implementing the inventory system in my game, and I've collected a few thoughts on what went well, and what was definitely a mistake.
+
+## Mistake: Being too clever, too soon
+When I was implementing bags and equipment for the first time, I had the realization that equippable inventories and containers are very similar objects. They both accept items, they are both ordered (have slot numbers), and they both have constraints on the items that they would accept. I thought it would be a good idea to embrace this, and make the equipment component implement the interface that I had made for bags, since they would both need to accept items from the other. I.e. you can take an item from a bag and put it into an equipment slot, and vice versa.
+This turned out to massively complicate things further down the line when I went to implement swapping behavior for two-handed equipment that was technically only one item. I'd have to do some runtime discovery of what each container was, and then modify the behavior of the swap operation depending on what I found. This type of scenario almost always means that I'm doing typing wrong, and this time was no exception. I went back and made an Equipment Wearer interface that's extremely similar to an Item Container, but is allowed to diverge for small yet critical functionality differences.
+If in the future I encountered this scenario, where I had two outwardly similar objects, I'd think really hard before tying them to the same interface, since that forces one system to start adopting assumptions that were made for a completely different system.
+
+## Went Well: Itemized Container Attribute
+I'm particulary happy with a choice to do some additional indirection when it came to implementing the Item Attribute that allowed an item to have an inventory of its own. Instead of implementing the behavior on the attribute itself, and holding an array of items, I instead put all of that into its own ItemContainer class, and had the ItemizedContainer Attribute hold a pointer to one of those. 
+When it came time to set up the Item Attributes I needed for spellbooks, I was able to reuse the ItemizedContainer Attribute, but give it a subclass of the original ItemContainer class that accounted for the additional restrictions on the type of items that can placed inside of spellbooks.
+I was also able to reuse the ItemContainer class to make an ActorComponent that could be placed on Blueprint-derived Actors, that retained all of the fancy "EditInlineNew" behavior that is only accessibly for C++ derived classes. This component is what will allow me to create lootable chests in blueprints, while retaining the ability to instantiate the entire contents list in the property editor.
+
+## Still Learning: Interface Forwarding
+A pattern I find myself returning to is:
+* Declare an interface for a particular behavior
+* Create a component that holds information related to the behavior, and implements the interface's functionality
+* Add this component to an Actor, and have that Actor implement the interface, Forwarding all of the calls to the implementing component
+I'm wondering if making the component implement the interface is the right call here. I end up writing a ton of glue code in the parent Actor that is essentially:
+
+void InterfaceFunction(param) {
+    AppropriateComponent->InterfaceFunction(Param);
+}
+
+Maybe the tool I'm looking for here is code generation? It seems like something I could definitely automate, but I'd rather just write the handful of lines of boring code and move on than dwell too much here. I'd feel differently if I started doing this at scale, but this seems to be a problem only for the bigger base classes (like Items and the base Pawn class).
