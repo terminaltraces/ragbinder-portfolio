@@ -23,9 +23,11 @@ A pattern I find myself returning to is:
 * Add this component to an Actor, and have that Actor implement the interface, Forwarding all of the calls to the implementing component
 I'm wondering if making the component implement the interface is the right call here. I end up writing a ton of glue code in the parent Actor that is essentially:
 
+<code>
 void InterfaceFunction(param) {
     AppropriateComponent.InterfaceFunction(Param)
 }
+</code>
 
 Maybe the tool I'm looking for here is code generation? It seems like something I could definitely automate, but I'd rather just write the handful of lines of boring code and move on than dwell too much here. I'd feel differently if I started doing this at scale, but this seems to be a problem only for the bigger base classes (like Items and the base Pawn class).
 
