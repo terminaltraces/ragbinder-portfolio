@@ -3,7 +3,8 @@ title: "What's in the Box?"
 date: "2024-03-27"
 ---
 
-#What's in the Box?
+# What's in the Box?
+
 I've made a couple passes now at implementing the inventory system in my game, and I've collected a few thoughts on what went well, what was definitely a mistake, and what I'd do differently next time.
 
 ## Mistake: Being too clever, too soon
@@ -24,8 +25,9 @@ A pattern I find myself returning to is:
 
 - Declare an interface for a particular behavior
 - Create a component that holds information related to the behavior, and implements the interface's functionality
-- Add this component to an Actor, and have that Actor implement the interface, Forwarding all of the calls to the implementing component
-  I'm wondering if making the component implement the interface is the right call here. I end up writing a ton of glue code in the parent Actor that is essentially:
+- Add this component to an Actor, and have that Actor implement the interface, forwarding all of the calls to the implementing component
+  
+I'm wondering if making the component implement the interface is the right call here. I end up writing a ton of glue code in the parent Actor that is essentially:
 
 ```c++
 void InterfaceFunction(param) {
@@ -37,6 +39,6 @@ Maybe the tool I'm looking for here is code generation? It seems like something 
 
 ## Have Stronger Opinions On: C++ vs BP Interfaces
 
-Something I tried to be very intentional about was using Blueprint Interfaces whereever I could, so that I could easily change out implementations as need arose. I did exactly this several times, making multiple passes at both items and spells, each using BP interfaces. It was really easy to drop in better implementations each time once I had constricted all communication with the object to use the interface. When this didn't serve me well, however, was when I went to re-implement items one more time in C++, to take advantage of language features that couldn't be used with Blueprints. C++ classes don't have any knowledge of BP types, so I had to make a similar interface in C++, and then make a ton of small fixes to the blueprint side of the code using the new interface. In a larger project, this would have been a nightmare change. If I were working on prototyping another project like this, I'd much prefer to just use C++ interfaces in the first place, since they're just header delcarations that change infrequently.
+Something I tried to be very intentional about was using Blueprint Interfaces wherever I could, so that I could easily change out implementations as need arose. I did exactly this several times, making multiple passes at both items and spells, each using BP interfaces. It was really easy to drop in better implementations each time once I had constricted all communication with the object to use the interface. When this didn't serve me well, however, was when I went to re-implement items one more time in C++, to take advantage of language features that couldn't be used with Blueprints. C++ classes don't have any knowledge of BP types, so I had to make a similar interface in C++, and then make a ton of small fixes to the blueprint side of the code using the new interface. In a larger project, this would have been a nightmare change. If I were working on prototyping another project like this, I'd much prefer to just use C++ interfaces in the first place, since they're just header delcarations that change infrequently.
 
 Over the past month, I've been working almost entirely in C++ instead of Blueprints. I've definitely missed the iteration speed that working in Blueprints buys, and would probably stick to using them to prototype functionality, especially if I'm still exploring what the requirements are. I'd avoid BP interfaces next time and put C++ interfaces in the prototype, so I can start building a "real" implementation when the time came without having to go back and fix a ton of broken BP references. I'd almost say they were a trap, but there's definitely value to using them as you're getting a new system stood up, so long as you don't let the references to them proliferate too widely.
