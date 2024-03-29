@@ -2,33 +2,44 @@
 title: "How to Handle a Chaotic Player (Input Stream)"
 date: "2024-02-26"
 ---
-
 # How to Handle a Chaotic Player (Input Stream)
+Characters in this game take turns in a global turn order. When it is a character's turn, they take an action that applies its effects immediately, and then tell the turn order how many time units must pass before they will act again. The turn order then picks the character that has the next turn (lowest next action timer), and repeats this process indefinitely.
 
-At its core, this game has a strict set of rules, with one actor manipulating the game state at a time. This affords us some nice things, like making the game state deterministic, but a trade-off is it makes handling player input somewhat more complicated. We have to coerce a real-time stream of player input into actions in a turn-based system in a way that feels responsive. The player might not move forward immediately when they tap W, but only when it is their turn. This leaves a window where the player can enter a few inputs, and we have to decide what to do with them.
+This is great for keeping track of actor turns, and lends itself nicely to the kind of board game mechanics I enjoy. AI can be paused until it is their turn, and call their logic only when it is time to make a decision, producing a single command for their pawn to execute. However, the player is free to think when it is not their turn, change their mind, and even think a few moves ahead. It would be undesirable to only take a single input when the player's pawn is active in the turn order, so we'll want to queue up at least one action, based on the last input the player has entered.
 
-Actors that are included in the turn order store one command, to be executed when it is their turn to act. This works fine for NPC pawns, that run their AI script each time they need to decide what to do, but it feels bad for players when you tap the W key three times, but only go up twice. This happens because one of the W keys will get effectively discarded because the keypress only generated a command to store in this command slot. To make player input feel responsive, I simply queue player inputs so that tapping keys will take you in the direction(s) you pressed, the number of times you pressed them.
-Under this scheme, moving long distances can be tedious, especially if your keyboard has somewhat heavy key presses, or if you have physical difficulty with spamming repeated inputs. The next improvement I needed was to handle the player holding down a key. On its own, this is simple enough. I could have just checked for a key being down when the pawn was active in the turn order, but had no active command yet. However, this has its own problems once you start shortening the animation time for player movement below 0.15s or so. I would often move twice when I only meant to move once. Not only that, but how should I handle transitioning between commands that come from tapped keypresses versus ones that come from key holds?
+When I tried this first implementation, I noticed that the game felt unresponsive because it was discarding repeated taps of the move key. If I wanted to move three squares up, I couldn't just mash the W key 3 times without waiting between keypresses. If I didn't wait, one of the inputs would get discarded, since the third input would overwrite the second. The criteria for success here is that player intent has to be translated to the game system, and not requiring that the player time their inputs so that the system is ready for them.
 
-Our good friend, the finite state machine, has our backs here! We can lay out precisely these interactions by defining states that map to player intent, and have some clarity about when we should discard inputs.
+The other problem with this implementation is that moving in the same direction over large distances was frustrating on the heavy keyboard switches I like, so we'll need to take Held button inputs as well. And since this is a Hex-grid based game, if the player wanted to go in a direction that didn't align with one of the 3 hex directions (like left or right), they'd have to hold two buttons.
+
+The last problem is a good case to use Unreal's Advanced Input system, since we can map the key pairs Q/D, W/S, and A/E to 3 input axes, then make Actions for pressing a wait key and an interact key. However, while being similar to the state machines mentioned in the linked article, the Input Contexts themselves can't be used to store gameplay data like the queued actions we want, and aren't quite what we need to solve our input queueing problem.
+
+While writing the code the decode input axes from the input system and translate them into the QRS directions my coordinate system uses, I had an interesting question about how to write code using vector math. Do I write it so it's as elegant and satisfying as possible? Or do I write it so that I can debug it at 1 in the morning after coding for 3 hours after an 8 hour workday and putting my daughter to bed…
+I'm positing the latter is the superior code for my purposes.
+
+After some experimenting with Unreal's Input Contexts, I decided not to try to be clever and implicitly encode data about the player's intent into the system, and opted for a simple state machine to sit alongside it. The state machine will take inputs from the Input context, which affects which manipulations are possible for our custom Input State Machine. For example, simply pushing on an input context makes it much easier to disable all inputs that might advance the turn order while in menus. When we're ready to start controlling the player's pawn again, their input state will be right where we left it.
 
 <FullWidthImage
   src="/images/state-machine.png"
   alt={"A diagram of a state machine"}
 />
 
-For further reading, I'd recommend [this chapter of Game Programming Patterns by Robert Nystrom](https://gameprogrammingpatterns.com/state.html).
+The states I settled on were:
+	• Tapped walking input (contains a move queue, discarding it when transitioning to held input)
+	• Held movement input (set up as axial, so holding W and D will take you in the E direction)
+	• Waiting (counts the number of queued waits, but cancels on any other input)
+	• Targeting (Holds a targeting instance, which drives updates for the target preview cursor)
+	• Confirmed Target (Holds a built targeting command, but will discard on input)
+	
+There's also a state machine wrapper object to obviate the need for any reference wrangling in the calling code. The state machine takes inputs for:
 
-The states I'm using are:
-
-- Tapping Movement Inputs - The player is pressing direction keys with the desire to product an exact offset on the grid. This should show an indicator for where the player is going to move to.
-- Holding Movement Inputs - The player is holding one or more direction keys with the desire to move repeatedly in one or more directions. Movement should alternate between held directions.
-- Tapping Wait Input - The player is pressing spacebar to end their turn. This should clear the movement queue so players can "cancel" unintended moves.
-- Holding Wait Input - The player is holding spacebar to pass a large number of turns
-- Spellcast Input - The player has targeted a spell - this should take priority over movement and waits
-- Interact Input - The player has clicked interact on an item in the world. This should also take priority over movement and waits
-
-Maintaining a Queue and reading that sucks, since we're going to assume player intent maps to the most recent thing they did. We'll need inputs from the player pressing keys/mouse buttons, and we'll need to drain the input state machine from the game state's command queue.
+	• Direction Tapped
+	• Direction Held
+	• Direction Released
+	• Clicked in world
+	• Right-Clicked in world
+	• Wait button pressed
+But most importantly, the states all have a "Get Command" function for the turn order system to consume. The Input State Machine is essentially a buffer of player intents that can be read by the turn order system asynchronously. If there's no player intent to consume, then the turn order waits on them to provide it.
+In addition to being able to output commands to the Turn system, the input state machine also has outputs for a preview cursor. This is a massive improvement to the feel of tapped movement, since the player can clearly see where they will end up, and can follow the head of their planned movement preview if they are moving through a dangerous environment where they need to watch their step. Without it, players would feel pressured to make only one input at a time if they were standing near the edge of a cliff, for fear of unintentionaly queueing movement that would take them off the edge.
 
 <FullWidthImage
   src="/images/movement-in-game-022024.png"
