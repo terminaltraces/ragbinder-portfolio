@@ -5,6 +5,7 @@ export default function H1({ children }: { children?: React.ReactNode }) {
   return (
     <Heading
       fontFamily="ingra"
+      size="lg"
       fontWeight="700"
       fontStyle="normal"
       color="#430707"
