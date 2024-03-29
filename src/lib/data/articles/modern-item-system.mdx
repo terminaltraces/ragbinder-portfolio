@@ -9,8 +9,8 @@ In the game I'm building, items can be used as inputs to multiple different game
 The prototype I made for basic items is rooted on a "Base Item" BP, with subclassed blueprints that have special functionalities, like bags. It is functional, and allowed me to get started implementing game systems around it, like the Spellbooks that grant player spells, or itemized bags they can fill with other items:
 <FullWidthImage src="/images/BP_Bag_prototype.png"/>
 However, this prototype implementation has a couple underlying technical problems:
-	• I'd need to make subclasses of data-only blueprints for each combination of item characteristics that I wanted. 
-	• Junk data exists that isn't really needed on each item, like requiring a Stack Quantity attribute for items that don't stack. 
+• I'd need to make subclasses of data-only blueprints for each combination of item characteristics that I wanted. 
+• Junk data exists that isn't really needed on each item, like requiring a Stack Quantity attribute for items that don't stack. 
 
 If we consider our previous baguette example, we'd need a new subclass that grabs all three of these behaviors, and repeat ad exponentum for every combination of systems that I end up putting in this game.
 
