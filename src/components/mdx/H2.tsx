@@ -11,6 +11,7 @@ export default function H1({ children }: { children?: React.ReactNode }) {
       color="#430707"
       mb="2"
       pb="4"
+      pt="4"
       as="h2"
     >
       {children}
