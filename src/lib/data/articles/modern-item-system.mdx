@@ -5,20 +5,20 @@ date: "2024-03-26"
 
 # A Scalable Solution for Multi-Functional Items
 ## The Prototype
+In the game I'm building, items can be used as inputs to multiple different game systems. For a fun example, let's imagine a day-old baguette. It could be used as food, which would need some implementation for edible behavior. It could be used as an offering to the harvest gods, needing some favor value baked in. And in desperate circumstances, it could even be a weapon! 
+
 The prototype I made for basic items is rooted on a "Base Item" BP, with subclassed blueprints that have special functionalities, like bags. It is functional, and allowed me to get started implementing game systems around it, like the Spellbooks that grant player spells, or itemized bags they can fill with other items:
 <FullWidthImage src="/images/BP_Bag_prototype.png"/>
-This prototype implementation has a couple underlying technical problems:
+However, this prototype implementation has a couple underlying technical problems:
 	• I'd need to make subclasses of data-only blueprints for each combination of item characteristics that I wanted. 
-	• junk data that isn't really needed on each item, like Stack Quantity for items that don't stack. 
+	• Junk data exists that isn't really needed on each item, like requiring a Stack Quantity attribute for items that don't stack. 
 
-The design I have allows items to be used as inputs to multiple different game systems. For a fun example, let's imagine a day-old baguette. It could be used as food, which would need some implementation for edible behavior. It could be used as an offering to the harvest gods, needing some favor value baked in. And in desperate circumstances, it could even be a weapon! Now we need a new subclass that grabs all three of these behaviors, and repeat ad exponentum for every combination of systems that I end up putting in this game.
+If we consider our previous baguette example, we'd need a new subclass that grabs all three of these behaviors, and repeat ad exponentum for every combination of systems that I end up putting in this game.
 
-I'd like to have a system where Items are instead data assets, and able to graft on behavior in any combination without making a combinatorial explosion of base blueprint classes. This is especially important because the design I am working on relies on being able to use items between many different systems. A player might cook some mushrooms they found in the forest, or eat them raw, or extract their magical essence with the alchemy system, or use them as material components for a fungal grown spell, etc. etc. etc.
+I'd like to have a system where items are instead data assets, and I can graft on behavior in any combination without making a combinatorial explosion of base blueprint classes. This is especially important because the design I am working on relies on being able to use items between many different systems. A player might cook some mushrooms they found in the forest, or eat them raw, or extract their magical essence with the alchemy system, or use them as material components for a fungal grown spell, etc. etc. etc.
 
 ## Lessons Learned from the Enhanced Input System
-Last month, I set about hardening my player input system by separating it into a keypress handling layer, and a user intent layer. The latter I covered in a previous post, but for the keypresses themselves, I opted to use Unreal's Enhanced Input System to do the heavy lifting. While learning the system, I took some lessons from their data-driven approach to configuring user actions. They were able to set up very nuanced composite behaviors from layering a handful of primitive behaviors together. The icing on top is that each of these behaviors were broken out into their own data asset, so it was easy to build resuable actions that could drive multiple behaviors.
-
-I realized that I could apply a similar approach to greatly reduce the complexity of my in-game item system. My first attempt was done in blueprints, with new item capabilities implmented in subclasses of a Base Item blueprint. Stackable items were their own subclasses, while Spellbooks were another, and Equippable items, etc.
+Last month, I set about hardening my player input system by separating it into a keypress handling layer, and a user intent layer. The latter I covered in a previous post, but for the keypresses themselves, I opted to use Unreal's Enhanced Input System to do the heavy lifting. While learning the system, I took some lessons from their data-driven approach to configuring user actions. They were able to set up very nuanced composite behaviors from layering a handful of primitive behaviors together. The icing on top is that each of these behaviors were broken out into their own data asset, so it was easy to build resuable actions that could drive multiple behaviors. I realized that I could apply a similar approach to greatly reduce the complexity of my in-game item system. 
 
 Instead of generating a heaving mass of blueprints that I don't really want to spend a Saturday fixing if (when) I decide to change a core behavior later, I could take the Enhanced Input System's approach, and give each item an array of Item Behaviors. If I wanted an item to be equippable, I'd give it an "Equippable" attribute, which contains all the data about how the item interacts with the equipment system. If I wanted an item to provide a spell the player can cast, it gets a "Spell Provider" attribute that will generate the runtime spell for us.
 
@@ -38,6 +38,6 @@ I'll end with some examples of the new Item Definitions:
 <FullWidthImage src="/images/item-spiked-hammer.png" />
 <FullWidthImage src="/images/item-tome-of-lightning-rift.png" />
 
-And one last picutre of how items looked in the inspector before this change:
+And one last picture of how items looked in the inspector before this change:
 <FullWidthImage src="/images/item-tome-of-lightning-rift-before.png" />
 Good riddance!
