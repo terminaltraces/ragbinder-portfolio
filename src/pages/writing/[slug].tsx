@@ -5,6 +5,7 @@ import Head from "next/head";
 import React from "react";
 import { NextPage } from "next";
 import H1 from "../../components/mdx/H1";
+import H2 from "../../components/mdx/H2";
 import FullWidthImage from "../../components/mdx/FullWidthImage";
 import CompareImage from "../../components/mdx/CompareImage";
 import P from "../../components/mdx/P";
@@ -28,6 +29,7 @@ const WritingPage: NextPage = ({
         // specifying the custom MDX components
         components={{
           h1: H1,
+          h2: H2,
           p: P,
           a: StyledLink,
           FullWidthImage,
