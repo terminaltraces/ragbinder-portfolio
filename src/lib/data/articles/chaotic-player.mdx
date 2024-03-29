@@ -24,20 +24,21 @@ After some experimenting with Unreal's Input Contexts, I decided not to try to b
 />
 
 The states I settled on were:
-	• Tapped walking input (contains a move queue, discarding it when transitioning to held input)
-	• Held movement input (set up as axial, so holding W and D will take you in the E direction)
-	• Waiting (counts the number of queued waits, but cancels on any other input)
-	• Targeting (Holds a targeting instance, which drives updates for the target preview cursor)
-	• Confirmed Target (Holds a built targeting command, but will discard on input)
+• Tapped walking input (contains a move queue, discarding it when transitioning to held input)
+• Held movement input (set up as axial, so holding W and D will take you in the E direction)
+• Waiting (counts the number of queued waits, but cancels on any other input)
+• Targeting (Holds a targeting instance, which drives updates for the target preview cursor)
+• Confirmed Target (Holds a built targeting command, but will discard on input)
 	
 There's also a state machine wrapper object to obviate the need for any reference wrangling in the calling code. The state machine takes inputs for:
 
-	• Direction Tapped
-	• Direction Held
-	• Direction Released
-	• Clicked in world
-	• Right-Clicked in world
-	• Wait button pressed
+• Direction Tapped
+• Direction Held
+• Direction Released
+• Clicked in world
+• Right-Clicked in world
+• Wait button pressed
+
 But most importantly, the states all have a "Get Command" function for the turn order system to consume. The Input State Machine is essentially a buffer of player intents that can be read by the turn order system asynchronously. If there's no player intent to consume, then the turn order waits on them to provide it.
 In addition to being able to output commands to the Turn system, the input state machine also has outputs for a preview cursor. This is a massive improvement to the feel of tapped movement, since the player can clearly see where they will end up, and can follow the head of their planned movement preview if they are moving through a dangerous environment where they need to watch their step. Without it, players would feel pressured to make only one input at a time if they were standing near the edge of a cliff, for fear of unintentionaly queueing movement that would take them off the edge.
 
