@@ -1,0 +1,26 @@
+---
+title: "Definitely Maybe"
+date: "2024-04-22"
+---
+# Definitely Maybe: When to Strategically Punt on Decisions
+## Where Do Stats Come From?
+While standing up core systems for this project, I often run into unanswered design questions. For example: Where do targeters get their range stat from? Is it part of the targeter, or do spells themselves have baked in base stats? Maybe neither, and the Spellbook provides most of the range? Since I'm the engineer and the designer, I get to put on my design hat and spend a couple hours mulling it over, then come back to C++ answer in hand. In a team setting, I couldn't just pull the trigger on decisions like this on my own. Plus, I'm totally willing to change my own answer if I find a compelling reason somewhere down the line.
+
+I think the best approach to answering this question is to value flexibility in the implementation. I'm going to maintain a list of stat sources for spell instances, and then combine all of the stat totals when I need a concrete value. This allows me to avoid making that design decision at all, and I can freely change my mind without any code impact. If I want the stats on spells themselves, great, just add some key-value pairs to a Stat Blob that’s already there. If I want them somewhere else instead, also great, just put a stat blob there.
+
+My takeaway here is that "Maybe" is an actionable answer to design questions, and getting unblocked on a code task is totally worth stomaching a little bit of added code complexity. In this case Maybe translates to "They come from all of the above, but designers have to opt-in." Obviously this has its limits, and I wouldn't want to extend it all the way to the extreme case of "Is the game multiplayer?". Where exactly the line is, I'm not sure, but for simple questions like "Do Spells themselves contribute base stats?", where the answer might change and the cost of assuming Yes is cheap, I'm willing to just pay that cost up front, especially when it's half an hour of converting single Types into Tarray<Type>s.
+
+## How Do I Handle Triggered Abilities?
+Something I had been unsure about was implementing complicated effects that come from items the player equips. I had only really thought about a Stat system for passing numerical values around, and using that to implement the behavior I desired would have been doable, but would have required me to use daunting Stat types like: "NumberOfLightningBoltsToCastOnKill". This was in the back of my mind as the path forward, and had been causing me to delay on implementing Stats until I had a better answer. I really wanted to get Stats up and running this month, so I made the decision to split these effects out into a new "Triggered Abilites" system. I haven't determined the exact details, but splitting the functionality off of Stats allowed me to unblock myself and implement a functional Stats system. Because I made the decision to split off unanswered engineering questions into their own system, I was able to get Stats implemented and functional on their own.
+<FullWidthImage
+  src="/images/FireballArcanas.png"
+  alt={"Stat only Arcanas for Fireball"}
+/>
+Now that I've reworked how Spells handle their effects for the umpteenth time, I think I've finally reached a scalable architecture that can gracefully handle the complexity I have in mind on the design side. "Spells" are simple UObjects that are mostly there to hold design data and track cooldowns. Because they're UObjects and not Actors, they can't have any direct interaction with the game world on their own. The real "magic" happens in "SpellEffect" actors. These are given targeting information when they spawn, and then immediately apply their effects and then handle any cleanup. Because I have this setup, if I want to make a mace that casts lightning bolt when you kill an enemy with it, I can spawn an instance of the Lightning Bolt SpellEffect, without having to do any additional blueprinting.
+
+## Closing C++ vs Blueprints Thoughts
+The major focus of this month has been porting all of my old Blueprint based systems to interact with my C++ item system. I've gained a much better understanding of how C++ and Blueprints work together, and will very glad to have it when deciding what to implement in Blueprints vs C++ moving forward.
+
+C++ code has much more powerful abstractions readily available to it, and I find it much easier to work with when you need to be very explicit about how to copy an object and how long it should live. You also have much more control over the levers and knobs you expose for configuring objects, so anything that would benefit from offering tons of composable configuration options is better done in C++.
+
+When I'm wearing my C++ Engineering hat, my job is to make flexible systems that allow for a large amount of end-user customization and experimentation, while keeping the information presented to the user (i.e. a game designer) down to only the relevant portions to the task at hand. When I'm wearing my Blueprint/Designer hat, I get to go nuts prototyping weird things, and be OK with using sprawling Blueprint implementations as stepping stones to discover where the fun is, and what type of systems I am going to ask engineering (aka myself) to build.
