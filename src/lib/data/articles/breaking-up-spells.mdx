@@ -1,0 +1,42 @@
+---
+title: "Breaking Down Spells"
+date: "2024-04-22"
+---
+# Spell Refactor
+## More Configurability
+One of my major efforts this month was another iteration on how the player casts spells. I really liked how Items ended up after spending the time to implement everything in C++, so I thought I'd take a similar approach for spells. I thought I'd benefit from having the same sort of extensibility and customization that I can do for items, since spells are going to have their behavior influenced by a wide array of other systems. If I have spells implemented in C++, I'll be able to take advantage of the "EditInlineNew" UProperty attribute to configure individual instances of spells with their own stat blocks. With Blueprint based spells, I'd have to create a separate Blueprint for each stat variation of the same base spell. 
+
+## Reusable Spell Effects
+I took some time at the beginning of the month to download the Lyra sample project (a tech demo provided by Epic showcasing best practices), and see how the new Gameplay Ability System worked. After studying it a bit, I realized that "Spells" as granted by spellbooks could be really lightweight data objects that didn't need to interact with the world on their own. The Data only object would be responsible for:
+- Tracking cooldowns
+- Maintaining a runtime list of sources to pull stats from
+- Spawning Targeting Actors when the UI request targeting
+- Spawning SpellEffect Actors when the UI confirms targeting
+
+The actual gameplay actions would be handled by a second "SpellEffect" Actor, which was allowed to interact with the world directly. A spell is considered "cast" when all of its targets have been selected, and any resource costs have been paid (thank you, decades of playing MTG) SpellEffect actors would have access to the targeting information, but have no dependence on the spellbook itself.
+
+This move to having SpellEffects be their own entity makes it a lot easier to handle scenarios like: 
+	• A warhammer that casts a lightning bolt when you kill an enemy with it
+	• A spell upgrade that puts burning ground under each affected enemy
+If SpellEffects are independent of actual Spells, I can just spawn them at will with any arbitrary Targeting and Stats information, without having to reimplement the lightning bolt spell since it comes off of a warhammer instead.
+
+## Casting a Spell, Keypress to Fireball:
+As it stands, here's an overview of the systems that are now involved in casting the Teleport spell:
+	1. PlayerController processes the hotkey for a spell slot, asking the Player Pawn for Targeting info for that slot
+		a. The Player Pawn asks the Equipment Component if there's a SpellProvider in the hotkey's corresponding EquipmentSlot
+		b. The Equipment Component returns a bool, as well as the type of Targeter it uses
+	2. PlayerController then transitions the Input State Machine to "Targeting", and passes along the Targeter Type
+	3. The Input State Machine spawns a Targeter Actor, and is responsible for managing its lifetime
+	4. PlayerController listens for Left Mouse inputs, and does a raycast to find the World Location the player clicks on. The location is sent to the Input State Machine
+	5. Input State Machine forwards the input Location to the Targeter, which tells the Input State Machine it's ready to cast
+	6. The Input State Machine transitions to "Spellcast Ready", and will provide a Spellcast Command to the initiative system when it's the player's turn
+	7. The initiative system Executes the Spellcast Command, which contains a reference to the Player Pawn's Spellcaster Component, along with which spell to cast and targeting info.
+	8. The Player's Spellcaster Component spends any necessary resources (e.g. mana), and then executes the correct spell's "Cast" function.
+	9. The Castable Spell puts itself on cooldown, and spawns its SpellEffects with the given Targeting info.
+	10. SpellEffects lock the turn order from progressing, play animations, do damage/other game effects, then unlock the turn order.
+	11. The Player's Spellcaster Component tells the initiative system how much time this took the Pawn, and the initiative system moves it back in the turn order
+
+<FullWidthImage
+  src="/images/Spellcast_Diagram.drawio.png"
+  alt={"Data Flow for Casting a Spell"}
+/>
