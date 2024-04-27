@@ -24,14 +24,13 @@ If SpellEffects are independent of actual Spells, I can just spawn them at will 
 Here's an overview of the systems that are now involved in casting the Fireball spell Start to Finish:
 We begin on the player's turn, with no spells being targeted.
 <FullWidthImage src="/images/IdleState.png" alt={"Initial state: Player is Idle"} />
-<FullWidthImage src="/images/Spellcast_Diagram_Part1.png" alt={"Data Flow for Casting a Spell"} />
 - PlayerController processes the hotkey for a spell slot, asking the Player Pawn for Targeting info for that slot
 - The Player Pawn asks the Equipment Component if there's a SpellProvider in the hotkey's corresponding EquipmentSlot
 - The Equipment Component returns a bool, as well as the type of Targeter it uses
 - PlayerController then transitions the Input State Machine to "Targeting", and passes along the Targeter Type
 - The Input State Machine spawns a Targeter Actor, and is responsible for managing its lifetime
+<FullWidthImage src="/images/Spellcast_Diagram_Part1.png" alt={"Data Flow for Casting a Spell"} />
 <FullWidthImage src="/images/TargetState.png" alt={"After Player pressed the 1 Hotkey"} />
-<FullWidthImage src="/images/Spellcast_Diagram_Part2.png" alt={"Data Flow for Casting a Spell"} />
 - PlayerController listens for Left Mouse inputs, and does a raycast to find the World Location the player clicks on. The location is sent to the Input State Machine
 - Input State Machine forwards the input Location to the Targeter, which tells the Input State Machine it's ready to cast
 - The Input State Machine transitions to "Spellcast Ready", and will provide a Spellcast Command to the initiative system when it's the player's turn
@@ -40,4 +39,5 @@ We begin on the player's turn, with no spells being targeted.
 - The Castable Spell puts itself on cooldown, and spawns its SpellEffects with the given Targeting info.
 - SpellEffects lock the turn order from progressing, play animations, do damage/other game effects, then unlock the turn order.
 - The Player's Spellcaster Component tells the initiative system how much time this took the Pawn, and the initiative system moves it back in the turn order
+<FullWidthImage src="/images/Spellcast_Diagram_Part2.png" alt={"Data Flow for Casting a Spell"} />
 <FullWidthImage src="/images/CastedState.png" alt={"After Player clicked the mouse to target the spell"} />
