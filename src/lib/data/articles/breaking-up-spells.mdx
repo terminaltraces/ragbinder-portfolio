@@ -16,27 +16,43 @@ I took some time at the beginning of the month to download the Lyra sample proje
 The actual gameplay actions would be handled by a second "SpellEffect" Actor, which was allowed to interact with the world directly. A spell is considered "cast" when all of its targets have been selected, and any resource costs have been paid (thank you, decades of playing MTG) SpellEffect actors would have access to the targeting information, but have no dependence on the spellbook itself.
 
 This move to having SpellEffects be their own entity makes it a lot easier to handle scenarios like: 
-	• A warhammer that casts a lightning bolt when you kill an enemy with it
-	• A spell upgrade that puts burning ground under each affected enemy
+- A warhammer that casts a lightning bolt when you kill an enemy with it
+- A spell upgrade that puts burning ground under each affected enemy
 If SpellEffects are independent of actual Spells, I can just spawn them at will with any arbitrary Targeting and Stats information, without having to reimplement the lightning bolt spell since it comes off of a warhammer instead.
 
 ## Casting a Spell, Keypress to Fireball:
-As it stands, here's an overview of the systems that are now involved in casting the Teleport spell:
-	1. PlayerController processes the hotkey for a spell slot, asking the Player Pawn for Targeting info for that slot
-		a. The Player Pawn asks the Equipment Component if there's a SpellProvider in the hotkey's corresponding EquipmentSlot
-		b. The Equipment Component returns a bool, as well as the type of Targeter it uses
-	2. PlayerController then transitions the Input State Machine to "Targeting", and passes along the Targeter Type
-	3. The Input State Machine spawns a Targeter Actor, and is responsible for managing its lifetime
-	4. PlayerController listens for Left Mouse inputs, and does a raycast to find the World Location the player clicks on. The location is sent to the Input State Machine
-	5. Input State Machine forwards the input Location to the Targeter, which tells the Input State Machine it's ready to cast
-	6. The Input State Machine transitions to "Spellcast Ready", and will provide a Spellcast Command to the initiative system when it's the player's turn
-	7. The initiative system Executes the Spellcast Command, which contains a reference to the Player Pawn's Spellcaster Component, along with which spell to cast and targeting info.
-	8. The Player's Spellcaster Component spends any necessary resources (e.g. mana), and then executes the correct spell's "Cast" function.
-	9. The Castable Spell puts itself on cooldown, and spawns its SpellEffects with the given Targeting info.
-	10. SpellEffects lock the turn order from progressing, play animations, do damage/other game effects, then unlock the turn order.
-	11. The Player's Spellcaster Component tells the initiative system how much time this took the Pawn, and the initiative system moves it back in the turn order
-
+Here's an overview of the systems that are now involved in casting the Fireball spell Start to Finish:
+- PlayerController processes the hotkey for a spell slot, asking the Player Pawn for Targeting info for that slot
+-- The Player Pawn asks the Equipment Component if there's a SpellProvider in the hotkey's corresponding EquipmentSlot
+-- The Equipment Component returns a bool, as well as the type of Targeter it uses
+- PlayerController then transitions the Input State Machine to "Targeting", and passes along the Targeter Type
+- The Input State Machine spawns a Targeter Actor, and is responsible for managing its lifetime
 <FullWidthImage
-  src="/images/Spellcast_Diagram.drawio.png"
+  src="/images/Spellcast_Diagram_Part1.png"
   alt={"Data Flow for Casting a Spell"}
+/>
+- PlayerController listens for Left Mouse inputs, and does a raycast to find the World Location the player clicks on. The location is sent to the Input State Machine
+- Input State Machine forwards the input Location to the Targeter, which tells the Input State Machine it's ready to cast
+- The Input State Machine transitions to "Spellcast Ready", and will provide a Spellcast Command to the initiative system when it's the player's turn
+- The initiative system Executes the Spellcast Command, which contains a reference to the Player Pawn's Spellcaster Component, along with which spell to cast and targeting info.
+- The Player's Spellcaster Component spends any necessary resources (e.g. mana), and then executes the correct spell's "Cast" function.
+- The Castable Spell puts itself on cooldown, and spawns its SpellEffects with the given Targeting info.
+- SpellEffects lock the turn order from progressing, play animations, do damage/other game effects, then unlock the turn order.
+- The Player's Spellcaster Component tells the initiative system how much time this took the Pawn, and the initiative system moves it back in the turn order
+<FullWidthImage
+  src="/images/Spellcast_Diagram_Part2.png"
+  alt={"Data Flow for Casting a Spell"}
+/>
+In the actual game, this is what the above looks like:
+<FullWidthImage
+  src="/images/IdleState.png"
+  alt={"Initial state: Player is Idle"}
+/>
+<FullWidthImage
+  src="/images/TargetState.png"
+  alt={"After Player pressed the 1 Hotkey"}
+/>
+<FullWidthImage
+  src="/images/CastedState.png"
+  alt={"After Player clicked the mouse to target the spell"}
 />
