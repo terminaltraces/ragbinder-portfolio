@@ -68,7 +68,4 @@ This is all well and good in theory, but how do designers actually subscribe to 
 - ShouldSpawnSpellEffect*
 *ShouldSpawnSpellEffect is not intended to be directly subscribed to, and is how Spell Objects communicate with their owning spellcaster that they want to place their effects in the world. Because I don't intend for designers to use it, I did not create a TriggeredEffect class for it, so it doesn't show up in the property inspector dropdown when choosing event channels.
 These events are all pointed at the Spell Object's Message Broadcaster. For events that want to listen to the Pawn's event center instead, it's a simple matter of adding a new trigger class for that event scope.
-<FullWidthImage
-  src="/images/Event-BP.png"
-  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
-/>
+
