@@ -55,13 +55,9 @@ Message Broadcaster Header file: https://gitlab.com/kozmary/hexhexhex/-/blob/mas
 This topology is much simpler to maintain than the "everything is an event handler" approach, while allowing for objects to subscribe to different message streams by specifying which message handler they'd like to listen to. The default forwarding behavior means that the Pawn's Message Broadcaster will be a superset of all gameplay events, while the "child" Message Broadcaster nodes will only see events that that system generated.
 
 ## Effect Trigger and Triggered Effect objects
-This is all well and good in theory, but how do designers actually subscribe to all of these abstract event streams? For that, I provide a suite of TriggeredEffect classes, one for each different category of events that can be subscribed to. At the time of writing, there are events for
-- OnDamageDealt
-- PreSpellcast
-- PostSpellcast
-- ShouldSpawnSpellEffect*
-*ShouldSpawnSpellEffect is not intended to be directly subscribed to, and is how Spell Objects communicate with their owning spellcaster that they want to place their effects in the world. Because I don't intend for designers to use it, I did not create a TriggeredEffect class for it, so it doesn't show up in the property inspector dropdown when choosing event channels.
-These events are all pointed at the Spell Object's Message Broadcaster. For events that want to listen to the Pawn's event center instead, it's a simple matter of adding a new trigger class for that event scope.
-<FullWidthImage src="/images/TriggeredEffectDropdown.png" />
+This is all well and good in theory, but how do designers actually subscribe to all of these abstract event streams? For that, I provide a suite of TriggeredEffect classes, one for each different category of events that can be subscribed to. The designer simply needs to pick one of the triggers below to specify when their event should trigger:
 <FullWidthImage src="/images/TriggerEventDropdown.png" />
+They must then pick a triggered effect that corresponds to that type of trigger:
+<FullWidthImage src="/images/TriggeredEffectDropdown.png" />
+The events implemented at the time of writing are all pointed at the Spell Object's Message Broadcaster. For events that want to listen to the Pawn's event center instead, it's a simple matter of adding a new trigger class for that event scope.
 Having these triggering events and their related effects separated by type allows me to make it incredibly easy for designers to use this system, since they can only choose from valid options when setting up data assets for spell upgrades, and the entire set of valid options is presented to them in a searchable dropdown box in the editor.
