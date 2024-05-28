@@ -51,7 +51,9 @@ To address the problems from the first attempt, I implemented all of this functi
 
 ## Key Components
 ## Message Broadcaster Nodes
-Header File: https://gitlab.com/kozmary/hexhexhex/-/blob/master/Source/HexHexHex/Public/Events/GameplayEventMessageBroadcaster.h?ref_type=heads
+<Link href="https://gitlab.com/kozmary/hexhexhex/-/blob/master/Source/HexHexHex/Public/Events/GameplayEventMessageBroadcaster.h?ref_type=heads" isExternal>
+MessageBroadcaster.h
+</Link>
 When this object broadcasts a message, it automatically repeats to the parent Message Broadcaster, if it exists. This convention allows me to avoid a whole class of infinite message loop bugs, which was a constant concern with the first approach.
 
 ## Hub and Spoke Event Topology
