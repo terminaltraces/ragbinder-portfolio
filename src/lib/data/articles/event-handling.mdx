@@ -5,7 +5,7 @@ date: "2024-05-27"
 # The Why
 My favorite part of the classic Roguelike gameplay loop is finding emergent behaviors that arise in the interactions between different gameplay systems. The challenges posed in the next area always seem insurmountable, until the player has the "aha" moment of learning to harness the new powers offered by the fruit of their latest effort. This is where the joy is in these types of games, for the author at least. In order to create a satisfying number of deep interactions between sources of character power, I need a scalable way to have one system share information about what it's doing with another system. The communication itself needs to be completely agnostic of the inner workings of both communicators, instead defining a message format that both of the other systems will agree on to pass data from one to the other.
 
-#The Requirements
+# The Requirements
 I want this system to be simple to implement in blueprints, and not require careful shepherding of event broadcast code from individual spell or item blueprints. Core systems that use the data provided in items and spell definitions should handle the messaging, so I don't have to remember to send out "Spell Finished Casting" events at the end of every single spell Blueprint. For Example, this is how PreCast and PostCast abilities are triggered by the Spellcaster component:
 <FullWidthImage
   src="/images/Event-BP.png"
@@ -21,7 +21,7 @@ At the beginning of the month, these requirements existed only in scattered and 
 
 Now that we know exactly what this system needs to be, I'll go into the trial and error involved in getting there over the past month.
 
-#Try, Try, Try Again
+# Try, Try, Try Again
 ## 1st Attempt
 <FullWidthImage
   src="/images/Event-BP.png"
