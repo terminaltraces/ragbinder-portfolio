@@ -1,0 +1,71 @@
+---
+title: "Zeroing in on the Right Solution for Event Handling"
+date: "2024-05-27"
+---
+# The Why
+My favorite part of the classic Roguelike gameplay loop is finding emergent behaviors that arise in the interactions between different gameplay systems. The challenges posed in the next area always seem insurmountable, until the player has the "aha" moment of learning to harness the new powers offered by the fruit of their latest effort. This is where the joy is in these types of games, for the author at least. In order to create a satisfying number of deep interactions between sources of character power, I need a scalable way to have one system share information about what it's doing with another system. The communication itself needs to be completely agnostic of the inner workings of both communicators, instead defining a message format that both of the other systems will agree on to pass data from one to the other.
+
+#The Requirements
+I want this system to be simple to implement in blueprints, and not require careful shepherding of event broadcast code from individual spell or item blueprints. Core systems that use the data provided in items and spell definitions should handle the messaging, so I don't have to remember to send out "Spell Finished Casting" events at the end of every single spell Blueprint. For Example, this is how PreCast and PostCast abilities are triggered by the Spellcaster component:
+<FullWidthImage
+  src="/images/Event-BP.png"
+  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
+/>
+
+I also need to have the capability to "listen" to separate streams of messages. Two quick illustrative examples taken from spell upgrades:
+- Upgraded spell applies a Burning debuff when the spell deals Fire damage to an enemy. This  upgrade needs to ignore messages from other spells or sources of Fire damage on the instigating Pawn.
+- Upgraded spell's remaining cooldown is lowered by 500ms whenever any effect on the instigating Pawn deals Fire damage.
+
+# Requirements Gathering is Hard but Essential Work
+At the beginning of the month, these requirements existed only in scattered and nebulous thoughts, and it took me a bit of hacking away and iterating on the design to really discover what I wanted from this system. Coding at the beginning of the month was slow because of this, and I walked away from it with a deeper appreciation of how difficult it actually is to turn a high-level design objective like "The game has upgradable spells" into actionable technical requirements.
+
+Now that we know exactly what this system needs to be, I'll go into the trial and error involved in getting there over the past month.
+
+#Try, Try, Try Again
+## 1st Attempt
+<FullWidthImage
+  src="/images/Event-BP.png"
+  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
+/>
+My first attempt at event handling involved creating an event handler interface, that every tier of the gameplay hierarchy would implement to pass messages up and down the ownership hierarchy. This approach had several severe issues:
+1. Requires rewriting forwarding functions in each class, since event delegate UPROPERTYs can't be included in Unreal's C++ interfaces.
+2. Most classes in the forwarding hierarchy did very little with the message, and having each of them as an option to subscribe to would introduce much more complexity than necessary.
+3. Changing event signatures, or adding new ones was extremely tedious with even minor changes requiring edits to dozens of otherwise unrelated files.
+4. Huge source of bugs when event handlers had to be linked manually during initialization for each layer.
+
+## 2nd Attempt
+<FullWidthImage
+  src="/images/Event-BP.png"
+  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
+/>
+My second attempt was an overreaction to the pain of having to maintain a tedious chain of event handlers. I tried collapsing all of the events for a pawn into a single message broadcaster on the pawn itself. This was far simpler to implement, and far, far simpler to debug. Once I had the basics working for this approach, I took a step back to determine if this was a viable path forward for the entirety of my design space. After poring over my list of planned spell upgrades, I realized that this would become awkward to work with as soon as I start adding events that only trigger off of damage from certain sources. I would have to add some sort of event filtering predicate to each triggered effect, and I couldn't think of a good way that didn't make the designer experience involve manually specifying these predicates at every turn. I wanted to bake the event triggering behavior into C++ code, and not require extra blueprint work to create the desired triggering behavior on every asset.
+
+## 3rd Attempt
+<FullWidthImage
+  src="/images/Event-BP.png"
+  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
+/>
+Third time's the charm, and the culmination of this month's work is a system that takes the benefits of both extremes (everything is an event handler | only one event handler), while having the drawbacks of neither, while making ease of use a first-class concern.
+To address the problems from the first attempt, I implemented all of this functionality in a new class named GameplayEventMessageBroadcaster. Pawns are given an instance of this object, and in addition each Spell and Attack object get an instance. When a spell or attack isn't active (i.e. not equipped), its MessageBroadcaster is deregistered and it doesn't receive or forward new gameplay events.
+
+# Key Components
+## Message Broadcaster Nodes
+Header File: https://gitlab.com/kozmary/hexhexhex/-/blob/master/Source/HexHexHex/Public/Events/GameplayEventMessageBroadcaster.h?ref_type=heads
+When this object broadcasts a message, it automatically repeats to the parent Message Broadcaster, if it exists. This convention allows me to avoid a whole class of infinite message loop bugs, which was a constant concern with the first approach.
+
+## Hub and Spoke Event Topology
+<FullWidthImage
+  src="/images/Event-BP.png"
+  alt={"Pre and Post Cast events sent by the Spellcaster Component"}
+/>
+This topology is much simpler to maintain than the "everything is an event handler" approach, while allowing for objects to subscribe to different message streams by specifying which message handler they'd like to listen to. The default forwarding behavior means that the Pawn's Message Broadcaster will be a superset of all gameplay events, while the "child" Message Broadcaster nodes will only see events that that system generated.
+
+## Effect Trigger and Triggered Effect objects
+This is all well and good in theory, but how do designers actually subscribe to all of these abstract event streams? For that, I provide a suite of TriggeredEffect classes, one for each different category of events that can be subscribed to. At the time of writing, there are events for
+- OnDamageDealt
+- PreSpellcast
+- PostSpellcast
+- ShouldSpawnSpellEffect*
+*ShouldSpawnSpellEffect is not intended to be directly subscribed to, and is how Spell Objects communicate with their owning spellcaster that they want to place their effects in the world. Because I don't intend for designers to use it, I did not create a TriggeredEffect class for it, so it doesn't show up in the property inspector dropdown when choosing event channels.
+These events are all pointed at the Spell Object's Message Broadcaster. For events that want to listen to the Pawn's event center instead, it's a simple matter of adding a new trigger class for that event scope.
+
