@@ -47,10 +47,9 @@ To address the problems from the first attempt, I implemented all of this functi
 
 # Key Elements of Final Implementation
 ## Message Broadcaster Node Objects
-<Link href="https://gitlab.com/kozmary/hexhexhex/-/blob/master/Source/HexHexHex/Public/Events/GameplayEventMessageBroadcaster.h?ref_type=heads" isExternal>
-MessageBroadcaster.h
-</Link>
 When this object broadcasts a message, it automatically repeats to the parent Message Broadcaster, if it exists. This convention allows me to avoid a whole class of infinite message loop bugs, which was a constant concern with the first approach.
+TODO: put this in a collapsible code snippet control
+Message Broadcaster Header file: https://gitlab.com/kozmary/hexhexhex/-/blob/master/Source/HexHexHex/Public/Events/GameplayEventMessageBroadcaster.h?ref_type=heads
 
 ## Hub and Spoke Event Topology
 This topology is much simpler to maintain than the "everything is an event handler" approach, while allowing for objects to subscribe to different message streams by specifying which message handler they'd like to listen to. The default forwarding behavior means that the Pawn's Message Broadcaster will be a superset of all gameplay events, while the "child" Message Broadcaster nodes will only see events that that system generated.
