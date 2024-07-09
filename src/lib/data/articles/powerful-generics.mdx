@@ -1,0 +1,60 @@
+---
+title: "Powerful Generics"
+date: "2024-07-08"
+---
+# Powerful Generics
+In order to achieve my goal of creating spell assets entirely with data, I am going to need an array of powerful generic effects that can cover the design space with just numerical tweaks. The first thing I did this sprint was sit down and refine the spells in my design document into their component game effects, and come up with the set of generic effects I would need to cover the whole design space.
+
+## Targeting
+For Targeting spells, I decided would need options for:
+- Targeting in a line, starting from the caster
+- Targeting a cone, starting from the caster
+- Targeting a circle, centered within a given radius of the caster
+
+A cool realization I made while planning out the code I needed to write was that line targeting was just a special case of cone targeting, with an arc width of zero. But an even cooler realization I made was that I shouldn't force designers to remember that whenever they wanted to use a line targeting scheme. No matter how "cool" something is mathematically, I'd be better off if I prioritized clarity in the interface above all.
+Here is how these three look in use:
+<FullWidthImage
+  src="/images/TargeterConfigs.png"
+  alt={"Left: Area of Effect targeter. Center: Line Targeter. Right: Cone Targeter."}
+/>
+
+## Spell Effects
+I sat down and gave spell effects the same treatment as targeters, and realized there's only a few types of things that the spells I designed actually do:
+- Deal damage to an Actor
+- Apply a status effect to an Actor
+- Spawn another Actor at the targeted location(s)
+- Move actors between hexes
+
+Let's take the damage dealing effect as an example:
+```c++
+UCLASS(EditInlineNew, BlueprintType, Blueprintable)
+class HEXHEXHEX_API USpellEffectDef : public UObject
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSubclassOf<ASpellEffectBase> EffectType;
+};
+
+UCLASS()
+class HEXHEXHEX_API UDamageEffectDef : public USpellEffectDef
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(Instanced, BlueprintReadWrite, EditDefaultsOnly)
+	UDamageBlob* Damage;
+};
+```
+This header exposes a Damage Blob object, which a designer can configure to apply a damage instance to every actor in the spell's target list.
+Here's how it looks in the editor:
+<FullWidthImage
+  src="/images/DamageEffectDef.png"
+  alt={"A Damage Effect Def configured with 1d100 Physical Damage."}
+/>
+
+## Areas for Improvement
+With as much as I got done on the spell data asset system this sprint, there's still more work needed in this area to make it something I'd be super happy handing off to a designer:
+- Specifying the spell effect's type in the property editor is something I'd like to avoid doing. I should change USpellEffectDef's EffectType UProperty to a virtual function that returns the type of the Effect to be instantiated instead, and implement it in each Spell Effect Def.
+- I don't really have a good way of specifying how each Spell Effect Def interacts with the Target List given to the spell. Most of the time I assume that I want to repeat the effect for each targeted Actor or surface, but this should be a config option.
+- I should make a pass on all of the information that I'd like visible at runtime for debugging, and make sure it's excluded from the Property Editor's view. Anything that the designer can touch in this interface should be something they SHOULD be touching.
