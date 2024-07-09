@@ -53,8 +53,11 @@ Here's how it looks in the editor:
   alt={"A Damage Effect Def configured with 1d100 Physical Damage."}
 />
 
+One of the really nice things this allows me to do is string together different effects by specifying the spell's effects as an array of SpellEffectDefs. I can add a DamageEffectDef and a DebuffEffectDef to a spell to make it deal damage and apply a debuff, with no scripting required!
+
 ## Areas for Improvement
 With as much as I got done on the spell data asset system this sprint, there's still more work needed in this area to make it something I'd be super happy handing off to a designer:
 - Specifying the spell effect's type in the property editor is something I'd like to avoid doing. I should change USpellEffectDef's EffectType UProperty to a virtual function that returns the type of the Effect to be instantiated instead, and implement it in each Spell Effect Def.
 - I don't really have a good way of specifying how each Spell Effect Def interacts with the Target List given to the spell. Most of the time I assume that I want to repeat the effect for each targeted Actor or surface, but this should be a config option.
+- Timing and animations are still much easier to handle in bespoke blueprints because of how powerful Timeline Nodes are.
 - I should make a pass on all of the information that I'd like visible at runtime for debugging, and make sure it's excluded from the Property Editor's view. Anything that the designer can touch in this interface should be something they SHOULD be touching.
