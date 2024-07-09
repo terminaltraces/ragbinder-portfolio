@@ -1,0 +1,24 @@
+---
+title: "Data Driven Everything"
+date: "2024-07-08"
+---
+# Data Driven Everything
+The most successful design I've had in this project so far has been the flexible item system. It's been able to gracefully handle creating and manipulating a wide array of items entirely within the editor itself.
+I can give the player a bag full of items, and change any of the item's individual properties on the fly. My goal this sprint was to take this success, and apply the lessons learned to the Spellcasting and Targeting systems.
+At the beginning of the Sprint, Spells consisted of a Targeter and a SpellEffect. Instances of Targeters had hard-coded values for their targeting characteristics (e.g. Range and Radius), and Instances of SpellEffects had to choose which Targeter Instance to use. This means if I wanted to have a Targeter that had a Range of 3 and another with a Range of 4, I'd have to make separate assets for both. At the end of the sprint, I was able to move to a much more flexible system, where parameter values can be set on individual instances of Targeters and SpellEffects inside of the Property Editor itself.
+
+## Reaping the Benefits of EditInlineNew for AActors
+Items were easy to set up to be manipulated entirely within the editor, since they are subclasses of UObjects, meaning that they can directly implement the EditInlineNew UProperty. This single property drives most of the Quality of Life wins for working on the content as a designer, by allowing the creation of new instances of a UObject derived class directly in the Property Editor. Each of the three top level Item Attributes in this Sword item can be configured inside of a data asset directly, making content creation a breeze!
+<FullWidthImage
+  src="/images/ItemDataAsset.png"
+  alt={"An Item Data Asset, making use of several EditInlineNew UProperties"}
+/>
+Unfortunately, since we're creating new instances each time we configure a value for one of these objects, we can't use this UProperty for anything derived from AActor. Those require a Game World to reside in, and when we're just setting values in the Property Editor, no such thing exists!
+
+## Solution: ActorDefs
+The Eureka moment this month was realizing that I could excise all of the information needed to initialize an AActor based class into a UObject based "Def" class. These "Def" classes allow me to configure the exact behavior of an Object that needs to exist in the world, and works around the limitations described above. In practice, this means I only need one "AoETargeter" class, and then I can create AoETargeterDef objects inline as I need them. I ended up implementing this pattern a few times this sprint, creating TargeterDefs, SpellEffectDefs, and StatusEffectDefs. With a little more thought, I could probably turn this into some handy Template that I apply to classes I've already written without having to do the heavy lifting manually, but I didn't want to get that far into the weeds. After all, what use is making really cool gameplay systems if you don't spend some time actually using them?
+I'll leave off here with an example of the Cone of Cold spell, which uses all of these new Actor Def classes, which allow for the creation of spells entirely with Data Assets!
+<FullWidthImage
+  src="/images/SpellDataAsset.png"
+  alt={"An Spell Data Asset, using ActorDefs with the EditInlineNew UProperty"}
+/>
