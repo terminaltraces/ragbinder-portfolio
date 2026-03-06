@@ -3,40 +3,30 @@ import NextLink from "next/link";
 import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import { InferGetStaticPropsType } from "next";
 import fs from "fs";
-import { serialize } from "next-mdx-remote/serialize";
+import matter from "gray-matter";
 import path from "path";
 import Head from "next/head";
 
+const articlesDirectory = "src/lib/data/articles";
+
 export async function getStaticProps() {
-  const articlesDirectory = "src/lib/data/articles";
-  // get all MDX files
   const postFilePaths = fs
     .readdirSync(articlesDirectory)
     .filter((postFilePath) => {
       return path.extname(postFilePath).toLowerCase() === ".mdx";
     });
 
-  const postPreviews = [];
-
-  // read the frontmatter for each file
-  for (const postFilePath of postFilePaths) {
+  const postPreviews = postFilePaths.map((postFilePath) => {
     const postFile = fs.readFileSync(
       `${articlesDirectory}/${postFilePath}`,
       "utf8"
     );
-
-    // serialize the MDX content to a React-compatible format
-    // and parse the frontmatter
-    const serializedPost = await serialize(postFile, {
-      parseFrontmatter: true,
-    });
-
-    postPreviews.push({
-      ...serializedPost.frontmatter,
-      // add the slug to the frontmatter info
+    const { data: frontmatter } = matter(postFile);
+    return {
+      ...frontmatter,
       slug: postFilePath.replace(".mdx", ""),
-    });
-  }
+    };
+  });
 
   return {
     props: {
@@ -45,11 +35,17 @@ export async function getStaticProps() {
   };
 }
 
-const PostComponent = (post) => {
-  const postDate = new Date(Date.parse(post.date)).toDateString();
+interface PostProps {
+  slug: string;
+  title: string;
+  date: string;
+}
+
+const PostComponent = ({ slug, title, date }: PostProps) => {
+  const postDate = new Date(Date.parse(date)).toDateString();
 
   return (
-    <Box pb="6" key={post.slug}>
+    <Box pb="6">
       <Link
         fontFamily="ingra"
         fontWeight="500"
@@ -57,9 +53,9 @@ const PostComponent = (post) => {
         pb="2"
         as={NextLink}
         fontSize={"3xl"}
-        href={`/writing/${post.slug}`}
+        href={`/writing/${slug}`}
       >
-        {post.title}
+        {title}
       </Link>
       <Text
         fontFamily="ingra"
@@ -92,7 +88,11 @@ const WritingsPage: NextPage = ({
       >
         Recent Writing
       </Heading>
-      <div>{postPreviews.map((postData) => PostComponent(postData))}</div>
+      <div>
+        {postPreviews.map((postData) => (
+          <PostComponent key={postData.slug} {...postData} />
+        ))}
+      </div>
     </>
   );
 };

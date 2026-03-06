@@ -9,18 +9,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <link rel="stylesheet" href="https://use.typekit.net/niz4gnx.css" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link
-          rel="icon"
-          href="/icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="/apple-icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
       </Head>
       <ChakraProvider>
         <Layout>

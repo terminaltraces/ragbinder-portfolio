@@ -42,7 +42,6 @@ const WritingPage: NextPage = ({
 };
 
 export async function getStaticPaths() {
-  const articlesDirectory = "src/lib/data/articles";
   // get all MDX files
   const fileNames = fs.readdirSync(articlesDirectory).filter((postFilePath) => {
     return path.extname(postFilePath).toLowerCase() === ".mdx";

@@ -42,7 +42,7 @@ export default function Layout({ children }) {
       minH="105vh"
     >
       <SidebarContent
-        onClose={() => onClose}
+        onClose={onClose}
         display={{ base: "none", md: "block" }}
       />
       <Drawer

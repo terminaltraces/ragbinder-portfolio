@@ -14,12 +14,19 @@ import {
 import Head from "next/head";
 import experience from "../lib/data/experience.json";
 
-const ExperienceComponent = (
-  gameTitle: string,
-  studio: string,
-  gameDescription: string,
-  gameImage: string
-) => {
+interface ExperienceProps {
+  gameTitle: string;
+  studio: string;
+  gameDescription: string;
+  gameImage: string;
+}
+
+const ExperienceComponent = ({
+  gameTitle,
+  studio,
+  gameDescription,
+  gameImage,
+}: ExperienceProps) => {
   return (
     <Card
       direction={{ base: "column", sm: "row" }}
@@ -30,7 +37,7 @@ const ExperienceComponent = (
         objectFit="cover"
         maxW={"25rem"}
         src={gameImage}
-        alt="Caffe Latte"
+        alt={gameTitle}
       />
       <Stack pt="4" pl="8">
         <CardBody>
@@ -101,14 +108,9 @@ const ExperiencePage: NextPage = () => {
           </Link>
           .
         </Text>
-        {experience.map((job) => {
-          return ExperienceComponent(
-            job.gameTitle,
-            job.studio,
-            job.gameDescription,
-            job.gameImage
-          );
-        })}
+        {experience.map((job) => (
+          <ExperienceComponent key={job.gameTitle} {...job} />
+        ))}
       </VStack>
     </>
   );
