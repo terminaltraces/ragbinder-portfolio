@@ -16,17 +16,20 @@ export async function getStaticProps() {
       return path.extname(postFilePath).toLowerCase() === ".mdx";
     });
 
-  const postPreviews = postFilePaths.map((postFilePath) => {
-    const postFile = fs.readFileSync(
-      `${articlesDirectory}/${postFilePath}`,
-      "utf8"
-    );
-    const { data: frontmatter } = matter(postFile);
-    return {
-      ...frontmatter,
-      slug: postFilePath.replace(".mdx", ""),
-    };
-  });
+  const postPreviews = postFilePaths
+    .map((postFilePath) => {
+      const postFile = fs.readFileSync(
+        path.join(articlesDirectory, postFilePath),
+        "utf8"
+      );
+      const { data } = matter(postFile);
+      return {
+        slug: postFilePath.replace(".mdx", ""),
+        title: data.title as string,
+        date: data.date as string,
+      };
+    })
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return {
     props: {
