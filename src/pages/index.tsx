@@ -49,7 +49,7 @@ const IndexPage: NextPage = () => {
                   objectFit="cover"
                   maxW={"100%"}
                   src="/images/MWII-SEASON-01-ROADMAP-004.png"
-                  alt="Caffe Latte"
+                  alt="Call of Duty: Warzone season 1 roadmap"
                 />
               </CardBody>
               <CardFooter
@@ -87,7 +87,7 @@ const IndexPage: NextPage = () => {
                   objectFit="cover"
                   maxW={"100%"}
                   src="/images/British_Museum_Royal_Game_of_Ur.png"
-                  alt="Caffe Latte"
+                  alt="The Royal Game of Ur, British Museum"
                 />
               </CardBody>
               <CardFooter
@@ -125,7 +125,7 @@ const IndexPage: NextPage = () => {
                   objectFit="cover"
                   maxW={"100%"}
                   src="/images/pankaj-patel-ZV_64LdGoao-unsplash.png"
-                  alt="Caffe Latte"
+                  alt="Code on a computer screen"
                 />
               </CardBody>
               <CardFooter

@@ -12,7 +12,7 @@ import P from "../../components/mdx/P";
 import StyledLink from "../../components/mdx/StyledLink";
 import List from "../../components/mdx/List";
 import path from "path";
-import fs from "fs"; // Import the 'fs' module from the Node.js standard library
+import fs from "fs";
 
 const articlesDirectory = "src/lib/data/articles";
 
@@ -53,12 +53,11 @@ export async function getStaticPaths() {
       },
     };
   });
-  console.log(filePaths);
   return { paths: filePaths, fallback: false };
 }
 
 export async function getStaticProps({ params }) {
-  const postFile = fs.readFileSync(`${articlesDirectory}/${params.slug}.mdx`);
+  const postFile = fs.readFileSync(path.join(articlesDirectory, `${params.slug}.mdx`));
 
   // read the MDX serialized content along with the frontmatter
   // from the .mdx blog post file
