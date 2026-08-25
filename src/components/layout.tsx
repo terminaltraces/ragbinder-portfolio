@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { AiFillLinkedin, AiFillGitlab, AiOutlineMail } from "react-icons/ai";
 import { FiMenu } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 const wordmarkFont = { fontFamily: "display" } as const;
 
@@ -78,16 +79,27 @@ export default function Layout({ children }: { children: ReactNode }) {
       backgroundAttachment="fixed"
       minH="105vh"
     >
+      <Link
+        href="#main-content"
+        position="absolute"
+        left="-9999px"
+        bg="brand.merlot"
+        color="white"
+        p="3"
+        zIndex="overlay"
+        borderRadius="md"
+        _focus={{ left: "8px", top: "8px" }}
+      >
+        Skip to main content
+      </Link>
       <SidebarContent
         onClose={onClose}
         display={{ base: "none", md: "block" }}
       />
       <Drawer
-        autoFocus={false}
         isOpen={isOpen}
         placement="left"
         onClose={onClose}
-        returnFocusOnClose={false}
         onOverlayClick={onClose}
         size="full"
       >
@@ -108,6 +120,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       />
       <Box
         as="main"
+        id="main-content"
         ml={{ base: 0, md: 72 }}
         mr={{ base: 0, md: 12 }}
         position="relative"
@@ -207,9 +220,12 @@ interface NavItemProps extends FlexProps {
   link: string;
 }
 const NavItem = ({ link, children, ...rest }: NavItemProps) => {
+  const { pathname } = useRouter();
+  const isCurrent = pathname === link;
   return (
     <Link
       href={link}
+      aria-current={isCurrent ? "page" : undefined}
       {...wordmarkFont}
       fontSize="x-large"
       fontWeight="700"
