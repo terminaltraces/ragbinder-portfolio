@@ -203,7 +203,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             </Text>
           </Link>
           <Divider mt="35px" mb="25px" />
-          <Flex flexDir="row" mt="5vh" mx="8" mb="8">
+          <Flex flexDir="row">
             <SocialIcon
               href="https://www.linkedin.com/in/kozmary/"
               icon={AiFillLinkedin}
