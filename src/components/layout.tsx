@@ -36,6 +36,11 @@ const SocialIcon = ({
       color="white"
       as={icon}
       _hover={{ bg: "brand.cream", color: "brand.merlot" }}
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "brand.cream",
+        outlineOffset: "2px",
+      }}
     />
   </Link>
 );
@@ -99,8 +104,10 @@ export default function Layout({ children }: { children: ReactNode }) {
         h={{ base: "165px", md: "265px" }}
         ml={{ base: 0, md: 100 }}
         alt=""
+        aria-hidden="true"
       />
       <Box
+        as="main"
         ml={{ base: 0, md: 72 }}
         mr={{ base: 0, md: 12 }}
         position="relative"
@@ -208,6 +215,11 @@ const NavItem = ({ link, children, ...rest }: NavItemProps) => {
       fontWeight="700"
       textDecoration="none"
       _focus={{ boxShadow: "none" }}
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "brand.cream",
+        outlineOffset: "2px",
+      }}
     >
       <Flex
         align="center"

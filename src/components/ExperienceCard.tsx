@@ -37,7 +37,7 @@ export default function ExperienceCard({
           >
             {gameTitle}
           </Heading>
-          <Heading fontWeight="500" fontSize="2xl" mb="4" as="h3">
+          <Heading fontWeight="500" fontSize="lg" mb="4" as="h3">
             {studio}
           </Heading>
           <Text py="2">{gameDescription}</Text>
