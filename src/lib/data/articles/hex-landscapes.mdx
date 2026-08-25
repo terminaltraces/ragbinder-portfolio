@@ -18,9 +18,9 @@ We also have at our disposal the additional features that accompany Unreal Lands
 
 <CompareImage
   imageOne="/images/unreal-comp-photo-image1.jpg"
-  imageOneAlt="alt"
+  imageOneAlt="Unreal landscape painted with terrain type materials, before hex tile placement"
   imageTwo="/images/unreal-comp-photo-image2.jpg"
-  imageTwoAlt="alt"
+  imageTwoAlt="The same landscape with hexagonal tiles placed at sampled elevation levels"
 />
 
 This terrain painting relies on setting a different physics material for each type of terrain, then grabbing the material data from the raycast that also gathers the terrain height. It's useful here to group the material to tile correlation into a tileset data asset, so we can quickly swap between different parameter sets. I also set the physics material of the tile to match the one used on the landscape, so we can hold onto the terrain type data after initial map generation is done. I use this layer to implement a dynamic flocking system, where the bases under static terrain pieces have different materials applied to better blend the pieces into the terrain they're occupying.

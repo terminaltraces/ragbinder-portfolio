@@ -7,7 +7,10 @@ date: "2024-03-26"
 In the game I'm building, items can be used as inputs to multiple different game systems. For a fun example, let's imagine a day-old baguette. It could be used as food, which would need some implementation for edible behavior. It could be used as an offering to the harvest gods, needing some favor value baked in. And in desperate circumstances, it could even be a weapon! 
 
 The prototype I made for basic items is rooted on a "Base Item" BP, with subclassed blueprints that have special functionalities, like bags. It is functional, and allowed me to get started implementing game systems around it, like the Spellbooks that grant player spells, or itemized bags they can fill with other items:
-<FullWidthImage src="/images/BP_Bag_prototype.png"/>
+<FullWidthImage
+  src="/images/BP_Bag_prototype.png"
+  alt={"Blueprint class hierarchy: a Base Item blueprint with subclassed blueprints for bags and other special items"}
+/>
 However, this prototype implementation has a couple underlying technical problems:
 - I'd need to make subclasses of data-only blueprints for each combination of item characteristics that I wanted. 
 - Junk data exists that isn't really needed on each item, like requiring a Stack Quantity attribute for items that don't stack. 
@@ -23,20 +26,41 @@ Instead of generating a heaving mass of blueprints that I don't really want to s
 
 The "Magic" powering the Enhanced Input System's usability in the editor is the (woefully underdocumented) "EditInlineNew" Attribute that can be given to UCLASSes. What this does is allow you to create new UObject instances in the property window of the editor, and set their UProperty fields at design time. This will allow me to create items as Data Assets, rather than Data-Only Blueprints as I had been before. With a little bit of clever initialization, I can elide a significant amount of boilerplate code related to setting up custom items at runtime. Before this refactor, if I had wanted there to be a chest in the bottom of a dungeon containing a +1 flaming longsword, coated in Drow poison, and caked in rust, I would have needed to make a Blueprint that created all of that state on Begin Play, which is much more tedious than it deserves to be. Now I can just do this:
 
-<FullWidthImage src="/images/item-example-hammer.png" />
+<FullWidthImage
+  src="/images/item-example-hammer.png"
+  alt={"Unreal editor details panel showing an example hammer item's data asset properties"}
+/>
 Instead of having to remember to do something like this each time I wanted to set up a container with an item:
-<FullWidthImage src="/images/Avoid-doing-this.png" />
+<FullWidthImage
+  src="/images/Avoid-doing-this.png"
+  alt={"Screenshot of a verbose manual container setup in the editor, captioned as a pattern to avoid"}
+/>
 
 ## Caveats
 One rough edge of the Data Asset based approach is that it makes it too easy to create a particularly nasty type of bug, where it's easy to inadvertently start modifying designer data if you forget to deep-copy a pointer somewhere in C++ code. To defend against this, I decided to separate Items into ItemArchetypes and ItemInstances. Archetypes are a collection of Read-Only Data Attributes that would contain all the design-time data needed to set up an item, and would be responsible for spawning an ItemInstance on begin play that would have all the mutable runtime state. If I didn't do this, I'd run the risk of corrupting the Data Assets if I forgot to deep-copy a pointer somewhere in C++ code. 
-<FullWidthImage src="/images/item-instance-uml.png" />
+<FullWidthImage
+  src="/images/item-instance-uml.png"
+  alt={"UML diagram separating read-only ItemArchetype data from mutable runtime ItemInstances"}
+/>
 
 ## Before and After
 I'll end with some examples of the new Item Definitions:
-<FullWidthImage src="/images/item-16-slot-bag.png" />
-<FullWidthImage src="/images/item-spiked-hammer.png" />
-<FullWidthImage src="/images/item-tome-of-lightning-rift.png" />
+<FullWidthImage
+  src="/images/item-16-slot-bag.png"
+  alt={"Item definition for a 16-slot bag, shown in the Unreal editor inspector"}
+/>
+<FullWidthImage
+  src="/images/item-spiked-hammer.png"
+  alt={"Item definition for a spiked hammer weapon, shown in the Unreal editor inspector"}
+/>
+<FullWidthImage
+  src="/images/item-tome-of-lightning-rift.png"
+  alt={"Item definition for a Tome of Lightning Rift spellbook, shown in the Unreal editor inspector"}
+/>
 
 And one last picture of how items looked in the inspector before this change:
-<FullWidthImage src="/images/item-tome-of-lightning-rift-before.png" />
+<FullWidthImage
+  src="/images/item-tome-of-lightning-rift-before.png"
+  alt={"The same Tome of Lightning Rift item as it appeared in the inspector before the data asset rework, with more clutter"}
+/>
 Good riddance!

@@ -4,10 +4,8 @@ import React from "react";
 export default function H1({ children }: { children?: React.ReactNode }) {
   return (
     <Heading
-      fontFamily="ingra"
       fontWeight="700"
-      fontStyle="normal"
-      color="#430707"
+      color="brand.oxblood"
       mb="4"
       pb="6"
       as="h1"

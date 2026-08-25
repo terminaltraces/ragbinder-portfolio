@@ -2,27 +2,20 @@ import { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "../components/layout";
 import Head from "next/head";
+import theme from "../theme";
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
+        {/* Typekit (Adobe Fonts): establish connections early so the font
+            stylesheet request isn't waiting on DNS/TLS mid-render. */}
+        <link rel="preconnect" href="https://use.typekit.net" />
+        <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
         <link rel="stylesheet" href="https://use.typekit.net/niz4gnx.css" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link
-          rel="icon"
-          href="/icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="/apple-icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
       </Head>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
