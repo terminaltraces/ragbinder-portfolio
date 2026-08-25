@@ -22,7 +22,7 @@ const theme = extendTheme({
       merlot: "#451919",
       // Warm cream — hover states.
       cream: "#D8CBB8",
-      // Warm light tan — used by FullWidthImage/CompareImage chrome.
+      // (reserved) warm light tan — 2.9:1 on white, decorative use only.
       sand: "#9e968a",
     },
   },

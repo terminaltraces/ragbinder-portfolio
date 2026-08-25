@@ -9,7 +9,7 @@ const IndexPage: NextPage = () => {
       <Head>
         <title>Home | Jordan Kozmary</title>
       </Head>
-      <Heading fontWeight="700" color="brand.oxblood" mb="4">
+      <Heading as="h1" fontWeight="700" color="brand.oxblood" mb="4">
         Hey, I'm Jordan.
       </Heading>
       <Text mb="8">
