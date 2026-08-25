@@ -30,7 +30,16 @@ const SocialIcon = ({
   icon: React.ComponentType;
   label: string;
 }) => (
-  <Link href={href} isExternal aria-label={label}>
+  <Link
+    href={href}
+    isExternal
+    aria-label={label}
+    _focusVisible={{
+      outline: "2px solid",
+      outlineColor: "brand.cream",
+      outlineOffset: "2px",
+    }}
+  >
     <Icon
       mr="4"
       fontSize="30"
@@ -88,7 +97,13 @@ export default function Layout({ children }: { children: ReactNode }) {
         p="3"
         zIndex="overlay"
         borderRadius="md"
-        _focus={{ left: "8px", top: "8px" }}
+        _focus={{
+          left: "8px",
+          top: "8px",
+          outline: "2px solid",
+          outlineColor: "brand.cream",
+          outlineOffset: "2px",
+        }}
       >
         Skip to main content
       </Link>
@@ -160,7 +175,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         mx="8"
       >
         <Stack>
-          <Link href="/" color="white">
+          <Link
+            href="/"
+            color="white"
+            _focusVisible={{
+              outline: "2px solid",
+              outlineColor: "brand.cream",
+              outlineOffset: "2px",
+            }}
+          >
             <Text
               fontSize="4xl"
               color="white"
