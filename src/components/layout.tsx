@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   IconButton,
   Box,
@@ -17,7 +17,28 @@ import {
 } from "@chakra-ui/react";
 import { AiFillLinkedin, AiFillGitlab, AiOutlineMail } from "react-icons/ai";
 import { FiMenu } from "react-icons/fi";
-import { ReactText } from "react";
+
+const wordmarkFont = { fontFamily: "display" } as const;
+
+const SocialIcon = ({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ComponentType;
+  label: string;
+}) => (
+  <Link href={href} isExternal aria-label={label}>
+    <Icon
+      mr="4"
+      fontSize="30"
+      color="white"
+      as={icon}
+      _hover={{ bg: "brand.cream", color: "brand.merlot" }}
+    />
+  </Link>
+);
 
 interface NavigationItemProps {
   name: string;
@@ -31,7 +52,18 @@ const NavigationItems: Array<NavigationItemProps> = [
   { name: "Contact", link: "mailto:kozmary@gmail.com" },
 ];
 
-export default function Layout({ children }) {
+const Divider = (props: { mt: string; mb: string }) => (
+  <Box
+    as="hr"
+    role="presentation"
+    borderTop="1px solid white"
+    borderBottom="none"
+    w="100px"
+    {...props}
+  />
+);
+
+export default function Layout({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box
@@ -42,7 +74,7 @@ export default function Layout({ children }) {
       minH="105vh"
     >
       <SidebarContent
-        onClose={() => onClose}
+        onClose={onClose}
         display={{ base: "none", md: "block" }}
       />
       <Drawer
@@ -66,6 +98,7 @@ export default function Layout({ children }) {
         w="100vw"
         h={{ base: "165px", md: "265px" }}
         ml={{ base: 0, md: 100 }}
+        alt=""
       />
       <Box
         ml={{ base: 0, md: 72 }}
@@ -91,7 +124,9 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
-      bg="#451919"
+      as="nav"
+      aria-label="Site navigation"
+      bg="brand.merlot"
       w={{ base: "full", md: 64 }}
       pos="fixed"
       h="full"
@@ -109,7 +144,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             <Text
               fontSize="4xl"
               color="white"
-              fontFamily="dutch-mediaeval-pro"
+              {...wordmarkFont}
               fontWeight="700"
               mb="5px"
             >
@@ -118,75 +153,37 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             <Text
               fontSize="2xl"
               color="white"
-              fontFamily="dutch-mediaeval-pro"
+              {...wordmarkFont}
               fontWeight="700"
             >
               Game Developer.
             </Text>
           </Link>
-          <hr
-            style={{
-              border: "1px solid white",
-              width: "100px",
-              marginTop: "35px",
-              marginBottom: "25px",
-            }}
-          />
+          <Divider mt="35px" mb="25px" />
           <Flex flexDir="row" mt="5vh" mx="8" mb="8">
-            <Link href="https://www.linkedin.com/in/kozmary/">
-              <Icon
-                mr="4"
-                fontSize="30"
-                color="white"
-                as={AiFillLinkedin}
-                _hover={{
-                  bg: "#D8CBB8",
-                  color: "#451919",
-                }}
-              />
-            </Link>
-            <Link href="https://gitlab.com/kozmary">
-              <Icon
-                mr="4"
-                fontSize="30"
-                color="white"
-                as={AiFillGitlab}
-                _hover={{
-                  bg: "#D8CBB8",
-                  color: "#451919",
-                }}
-              />
-            </Link>
-            <Link href="mailto:kozmary@gmail.com">
-              <Icon
-                mr="4"
-                fontSize="30"
-                color="white"
-                as={AiOutlineMail}
-                _hover={{
-                  bg: "#D8CBB8",
-                  color: "#451919",
-                }}
-              />
-            </Link>
+            <SocialIcon
+              href="https://www.linkedin.com/in/kozmary/"
+              icon={AiFillLinkedin}
+              label="Jordan Kozmary on LinkedIn"
+            />
+            <SocialIcon
+              href="https://gitlab.com/kozmary"
+              icon={AiFillGitlab}
+              label="Jordan Kozmary on GitLab"
+            />
+            <SocialIcon
+              href="mailto:kozmary@gmail.com"
+              icon={AiOutlineMail}
+              label="Email Jordan Kozmary"
+            />
           </Flex>
-          <hr
-            style={{
-              border: "1px solid white",
-              width: "100px",
-              marginTop: "25px",
-              marginBottom: "25px",
-            }}
-          />
+          <Divider mt="25px" mb="25px" />
         </Stack>
         <CloseButton
           display={{ base: "flex", md: "none" }}
           color="white"
           onClick={onClose}
-          _hover={{
-            bg: "#D8CBB8",
-            color: "#451919",
-          }}
+          _hover={{ bg: "brand.cream", color: "brand.merlot" }}
         />
       </Flex>
       {NavigationItems.map((nav) => (
@@ -199,19 +196,17 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 interface NavItemProps extends FlexProps {
-  children: ReactText;
+  children: ReactNode;
   link: string;
 }
 const NavItem = ({ link, children, ...rest }: NavItemProps) => {
   return (
     <Link
       href={link}
-      style={{
-        fontFamily: "dutch-mediaeval-pro",
-        fontSize: "x-large",
-        fontWeight: "700",
-        textDecoration: "none",
-      }}
+      {...wordmarkFont}
+      fontSize="x-large"
+      fontWeight="700"
+      textDecoration="none"
       _focus={{ boxShadow: "none" }}
     >
       <Flex
@@ -222,10 +217,7 @@ const NavItem = ({ link, children, ...rest }: NavItemProps) => {
         borderRadius="lg"
         role="group"
         cursor="pointer"
-        _hover={{
-          bg: "#D8CBB8",
-          color: "#451919",
-        }}
+        _hover={{ bg: "brand.cream", color: "brand.merlot" }}
         {...rest}
       >
         {children}
@@ -244,7 +236,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       px={{ base: 4, md: 24 }}
       height="20"
       alignItems="center"
-      bg="#451919"
+      bg="brand.merlot"
       justifyContent="flex-start"
       {...rest}
     >
@@ -254,16 +246,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         onClick={onOpen}
         aria-label="open menu"
         icon={<FiMenu />}
-        _hover={{
-          bg: "#D8CBB8",
-          color: "#451919",
-        }}
+        _hover={{ bg: "brand.cream", color: "brand.merlot" }}
       />
       <Link href="/" color="white">
         <Text
           fontSize={{ base: "xl", sm: "2xl" }}
           color="white"
-          fontFamily="dutch-mediaeval-pro"
+          {...wordmarkFont}
           fontWeight="700"
           ml="25px"
         >
