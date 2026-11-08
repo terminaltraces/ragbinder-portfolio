@@ -3,3 +3,6 @@
 
 # No need to store the pnpm store twice.
 .local
+
+# Original import is retained for reference, not served or published.
+.migration-backup

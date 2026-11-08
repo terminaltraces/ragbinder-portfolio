@@ -1,45 +1,32 @@
-# [Project name]
+# Jordan Kozmary Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Game developer portfolio with industry experience, personal projects, a downloadable resume, and game development articles.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Start the managed `artifacts/portfolio: web` workflow for the website.
+- `pnpm --filter @workspace/portfolio run typecheck` checks the frontend.
+- `node --test scripts/verify-portfolio.mjs` checks routes, compiled articles, and asset delivery against the running website.
+- Install dependencies from the root with `pnpm install`.
+- Artifact workflows supply `PORT` and `BASE_PATH`; do not run a root-level dev command.
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- pnpm workspace, React, Vite, TypeScript
+- Original Chakra UI theme, Typekit typography, and static assets
+- Article content remains local MDX; no database or credentials are required.
+- Shared API and database packages are unused scaffold, not portfolio dependencies.
+
+## Migration scope
+
+Preserve the imported portfolio rather than redesigning it. The original source is retained in `.migration-backup/` for comparison. The original Projects page says “Coming soon!”; completing that page is outside the migration.
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/portfolio/` — runnable portfolio
+- `.migration-backup/` — original imported Next.js app
+- `lib/`, `artifacts/api-server/`, `artifacts/mockup-sandbox/` — existing workspace scaffold
 
-## Architecture decisions
+## Routing
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+The portfolio owns `/`, `/experience`, `/projects`, `/writing`, and `/writing/:slug`. Static files include `/sjk-resume.pdf` and `/images/`.
