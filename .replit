@@ -20,6 +20,10 @@ author = "agent"
 task = "workflow.run"
 args = "portfolio-smoke"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "portfolio-static"
+
 [[workflows.workflow]]
 name = "portfolio-smoke"
 author = "agent"
@@ -27,6 +31,17 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node --test scripts/verify-portfolio.mjs"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[[workflows.workflow]]
+name = "portfolio-static"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm --filter @workspace/portfolio run build && node --test scripts/verify-static.mjs"
 
 [workflows.workflow.metadata]
 isValidation = true

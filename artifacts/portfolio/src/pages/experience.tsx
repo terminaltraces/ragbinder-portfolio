@@ -1,6 +1,6 @@
 import useTitle from "../lib/useTitle";
 import { VStack, StackDivider, Heading, Text, Link } from "@chakra-ui/react";
-import { Link as NextLink } from "wouter";
+import { Link as RouterLink } from "wouter";
 import experience from "../lib/data/experience.json";
 import ExperienceCard, { Experience } from "../components/ExperienceCard";
 
@@ -28,7 +28,7 @@ const ExperiencePage = () => {
           least as comfortable as one can be. I have experience with Unreal and
           Unity - see my personal demos{" "}
           <Link
-            as={NextLink}
+            as={RouterLink}
             color="brand.oxblood"
             textDecoration="underline"
             href="/projects"

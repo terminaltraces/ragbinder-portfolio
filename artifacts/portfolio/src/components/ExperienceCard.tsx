@@ -1,4 +1,5 @@
 import { Card, CardBody, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { imageUrl } from "../lib/urls";
 
 export interface Experience {
   gameTitle: string;
@@ -22,7 +23,8 @@ export default function ExperienceCard({
       <Image
         objectFit="cover"
         maxW="25rem"
-        src={gameImage}
+        src={imageUrl(gameImage)}
+        decoding="async"
         alt={`${gameTitle} key art`}
         loading="lazy"
       />

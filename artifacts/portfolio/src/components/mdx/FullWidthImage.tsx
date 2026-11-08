@@ -1,4 +1,5 @@
 import { VStack } from "@chakra-ui/react";
+import { imageUrl } from "../../lib/urls";
 
 export default function HeroImage({ src, alt }: { src: string; alt: string }) {
   return (
@@ -6,11 +7,11 @@ export default function HeroImage({ src, alt }: { src: string; alt: string }) {
       <img
         width={1000}
         height={1000}
-        src={src}
+        src={imageUrl(src)}
         alt={alt}
         loading="lazy"
         decoding="async"
-        style={{ color: "transparent" }}
+        style={{ color: "transparent", maxWidth: "100%", height: "auto" }}
       />
     </VStack>
   );

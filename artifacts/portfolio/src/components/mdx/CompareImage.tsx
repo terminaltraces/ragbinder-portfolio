@@ -3,6 +3,7 @@ import {
   ReactCompareSliderImage,
 } from "react-compare-slider";
 import { VStack } from "@chakra-ui/react";
+import { imageUrl } from "../../lib/urls";
 
 type CompareImageProps = {
   imageOne: string;
@@ -22,9 +23,10 @@ const CompareImage = ({
       <ReactCompareSlider
         style={{
           width: "1000px",
+          maxWidth: "100%",
         }}
-        itemOne={<ReactCompareSliderImage src={imageOne} alt={imageOneAlt} />}
-        itemTwo={<ReactCompareSliderImage src={imageTwo} alt={imageTwoAlt} />}
+        itemOne={<ReactCompareSliderImage src={imageUrl(imageOne)} alt={imageOneAlt} loading="lazy" decoding="async" />}
+        itemTwo={<ReactCompareSliderImage src={imageUrl(imageTwo)} alt={imageTwoAlt} loading="lazy" decoding="async" />}
       />
     </VStack>
   );

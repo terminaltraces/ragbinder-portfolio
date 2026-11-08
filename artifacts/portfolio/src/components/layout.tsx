@@ -1,11 +1,10 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import {
   IconButton,
   Box,
   CloseButton,
   Flex,
   Image,
-  Link,
   Icon,
   Stack,
   Text,
@@ -18,6 +17,8 @@ import {
 import { AiFillLinkedin, AiFillGitlab, AiOutlineMail } from "react-icons/ai";
 import { FiMenu } from "react-icons/fi";
 import { useLocation } from "wouter";
+import Link from "./SiteLink";
+import { imageUrl } from "../lib/urls";
 
 const wordmarkFont = { fontFamily: "display" } as const;
 
@@ -80,9 +81,14 @@ const Divider = (props: { mt: string; mb: string }) => (
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [location] = useLocation();
+  useEffect(() => {
+    onClose();
+    if (!window.location.hash) window.scrollTo(0, 0);
+  }, [location, onClose]);
   return (
     <Box
-      bgImage="/images/bkg_base.png"
+      bgImage={imageUrl("/images/bkg_base.png")}
       bgRepeat="repeat"
       bgPosition="center"
       backgroundAttachment="fixed"
@@ -125,7 +131,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Image
-        src="/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png"
+        src={imageUrl("/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png")}
+        fetchPriority="high"
+        decoding="async"
         fit={{ base: "cover", md: "fill" }}
         w="100vw"
         h={{ base: "165px", md: "265px" }}
@@ -230,7 +238,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         />
       </Flex>
       {NavigationItems.map((nav) => (
-        <NavItem key={nav.name} link={nav.link}>
+        <NavItem key={nav.name} link={nav.link} onClick={onClose}>
           {nav.name}
         </NavItem>
       ))}
@@ -244,7 +252,7 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ link, children, ...rest }: NavItemProps) => {
   const [pathname] = useLocation();
-  const isCurrent = pathname === link;
+  const isCurrent = (pathname.replace(/\/$/, "") || "/") === link;
   return (
     <Link
       href={link}

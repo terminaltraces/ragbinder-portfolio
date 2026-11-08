@@ -1,44 +1,20 @@
-import type { ComponentType } from "react";
+import { lazy, type ComponentType } from "react";
+import previews from "virtual:post-metadata";
 
-export interface PostFrontmatter {
+export interface PostPreview {
   title: string;
   date: string;
-  [key: string]: unknown;
-}
-
-export interface PostPreview extends PostFrontmatter {
   slug: string;
 }
 
-type MDXModule = {
-  default: ComponentType<{ components?: Record<string, unknown> }>;
-  frontmatter: PostFrontmatter;
-};
-
-const modules = import.meta.glob<MDXModule>("./data/articles/*.mdx", {
-  eager: true,
-});
-
-const posts = Object.entries(modules).map(([file, mod]) => ({
-  slug: file.replace(/^.*\/(.*)\.mdx$/, "$1"),
-  frontmatter: mod.frontmatter,
-  Component: mod.default,
+type MDXModule = { default: ComponentType<{ components?: Record<string, unknown> }> };
+const loaders = import.meta.glob<MDXModule>("./data/articles/*.mdx");
+const posts = previews.map((frontmatter) => ({
+  slug: frontmatter.slug,
+  frontmatter,
+  Component: lazy(loaders[`./data/articles/${frontmatter.slug}.mdx`]),
 }));
 
-export function getAllPostSlugs(): string[] {
-  return posts.map((p) => p.slug);
-}
-
-export function getPostPreviews(): PostPreview[] {
-  return posts
-    .map((p) => ({ ...p.frontmatter, slug: p.slug }))
-    .sort(
-      (a, b) =>
-        new Date(b.date as string).getTime() -
-        new Date(a.date as string).getTime()
-    );
-}
-
-export function getPost(slug: string) {
-  return posts.find((p) => p.slug === slug);
-}
+export const getAllPostSlugs = () => previews.map((post) => post.slug);
+export const getPostPreviews = () => previews;
+export const getPost = (slug: string) => posts.find((post) => post.slug === slug);

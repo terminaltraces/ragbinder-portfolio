@@ -9,6 +9,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "wouter";
+import { imageUrl } from "../lib/urls";
 
 interface HomeCardProps {
   imageSrc: string;
@@ -41,7 +43,11 @@ export default function HomeCard({
             <Image
               objectFit="cover"
               maxW="100%"
-              src={imageSrc}
+              src={imageUrl(imageSrc)}
+              htmlWidth={419}
+              htmlHeight={279}
+              height="auto"
+              decoding="async"
               alt={imageAlt}
               loading="lazy"
             />
@@ -55,7 +61,7 @@ export default function HomeCard({
             left={0}
             borderRadius="xl"
           >
-            <LinkOverlay href={href}>
+            <LinkOverlay as={href.startsWith("/") ? RouterLink : "a"} href={href}>
               <Stack>
                 <Text color="white" fontWeight={600}>
                   {label}
