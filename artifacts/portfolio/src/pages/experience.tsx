@@ -1,5 +1,5 @@
 import useTitle from "../lib/useTitle";
-import { VStack, StackDivider, Heading, Text, Link } from "@chakra-ui/react";
+import { Box, VStack, StackDivider, Heading, Text, Link } from "@chakra-ui/react";
 import { Link as RouterLink } from "wouter";
 import experience from "../lib/data/experience.json";
 import ExperienceCard, { Experience } from "../components/ExperienceCard";
@@ -17,8 +17,7 @@ const ExperiencePage = () => {
       >
         Industry Experience
       </Heading>
-      <VStack divider={<StackDivider borderColor="gray.200" />} spacing={8}>
-        <Text>
+      <Text mb="10" fontSize={{ md: "lg" }}>
           I've worked on Office for iOS and Algorithmic trading software before
           making the jump into games, and have worked on The Lamplighters'
           League and Call of Duty: Warzone. I have a Master's degree in Computer
@@ -29,16 +28,18 @@ const ExperiencePage = () => {
           Unity - see my personal demos{" "}
           <Link
             as={RouterLink}
-            color="brand.oxblood"
+            color="brand.rust"
             textDecoration="underline"
+            textUnderlineOffset="3px"
             href="/projects"
           >
             here
           </Link>
           .
-        </Text>
+      </Text>
+      <VStack as="ul" listStyleType="none" m="0" p="0" align="stretch" divider={<StackDivider borderColor="brand.cream" />} spacing={10}>
         {(experience as Experience[]).map((job) => (
-          <ExperienceCard key={job.gameTitle} {...job} />
+          <Box as="li" key={job.gameTitle}><ExperienceCard {...job} /></Box>
         ))}
       </VStack>
     </>

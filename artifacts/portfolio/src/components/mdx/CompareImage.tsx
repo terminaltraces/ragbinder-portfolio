@@ -2,7 +2,7 @@ import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from "react-compare-slider";
-import { VStack } from "@chakra-ui/react";
+import { Text, VStack } from "@chakra-ui/react";
 import { imageUrl } from "../../lib/urls";
 
 type CompareImageProps = {
@@ -19,7 +19,9 @@ const CompareImage = ({
   imageTwoAlt,
 }: CompareImageProps) => {
   return (
-    <VStack mt={"10"} mb={"12"}>
+    <VStack as="figure" mt={"10"} mb={"12"} mx="0"
+      sx={{ "[role=slider]:focus-visible": { outline: "3px solid #8A2B1F !important", outlineOffset: "-3px" } }}
+    >
       <ReactCompareSlider
         style={{
           width: "1000px",
@@ -28,6 +30,9 @@ const CompareImage = ({
         itemOne={<ReactCompareSliderImage src={imageUrl(imageOne)} alt={imageOneAlt} loading="lazy" decoding="async" />}
         itemTwo={<ReactCompareSliderImage src={imageUrl(imageTwo)} alt={imageTwoAlt} loading="lazy" decoding="async" />}
       />
+      <Text as="figcaption" fontSize="sm" color="brand.muted">
+        Compare the terrain images: drag the divider, or focus it and use the arrow keys.
+      </Text>
     </VStack>
   );
 };

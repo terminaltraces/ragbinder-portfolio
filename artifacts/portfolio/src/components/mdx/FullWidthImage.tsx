@@ -3,7 +3,7 @@ import { imageUrl } from "../../lib/urls";
 
 export default function HeroImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <VStack mt={"10"} mb={"12"}>
+    <VStack as="figure" mt={"10"} mb={"12"} mx="0">
       <img
         width={1000}
         height={1000}

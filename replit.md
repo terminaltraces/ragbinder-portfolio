@@ -1,6 +1,6 @@
 # Jordan Kozmary Portfolio
 
-Game developer portfolio with industry experience, personal projects, a downloadable resume, and game development articles.
+Portfolio for a video game developer and senior software engineer, with industry experience, personal projects, a downloadable resume, and game development articles.
 
 ## Run & Operate
 
@@ -32,7 +32,7 @@ Game developer portfolio with industry experience, personal projects, a download
 
 ## Migration scope
 
-Preserve the imported portfolio rather than redesigning it. The original source is retained in `.migration-backup/` for comparison. The original Projects page says “Coming soon!”; completing that page is outside the migration.
+The initial migration preserved the imported portfolio; subsequent user-approved refinement focuses on accessibility, semantics, readability, and responsive layout while retaining its warm visual identity and content. The original source is retained in `.migration-backup/` for comparison. The original Projects page says “Coming soon!”; completing that page is outside the current design pass.
 
 ## Where things live
 

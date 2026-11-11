@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import {
   IconButton,
   Box,
@@ -33,26 +33,21 @@ const SocialIcon = ({
 }) => (
   <Link
     href={href}
-    isExternal
+    isExternal={!href.startsWith("mailto:")}
     aria-label={label}
+    display="inline-flex"
+    mr="3"
+    p="1"
+    borderRadius="md"
+    color="white"
+    _hover={{ bg: "brand.cream", color: "brand.merlot" }}
     _focusVisible={{
       outline: "2px solid",
       outlineColor: "brand.cream",
       outlineOffset: "2px",
     }}
   >
-    <Icon
-      mr="4"
-      fontSize="30"
-      color="white"
-      as={icon}
-      _hover={{ bg: "brand.cream", color: "brand.merlot" }}
-      _focusVisible={{
-        outline: "2px solid",
-        outlineColor: "brand.cream",
-        outlineOffset: "2px",
-      }}
-    />
+    <Icon fontSize="28" as={icon} aria-hidden="true" focusable="false" />
   </Link>
 );
 
@@ -82,9 +77,30 @@ const Divider = (props: { mt: string; mb: string }) => (
 export default function Layout({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [location] = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+  const firstRender = useRef(true);
   useEffect(() => {
     onClose();
-    if (!window.location.hash) window.scrollTo(0, 0);
+    if (firstRender.current) { firstRender.current = false; return; }
+    if (window.location.hash) return;
+    window.scrollTo(0, 0);
+    // Lazy routes may resolve after navigation: wait for the actual page heading.
+    const focusHeading = () => {
+      const h1 = Array.from(mainRef.current?.querySelectorAll<HTMLElement>("h1") ?? [])
+        .find((heading) => heading.getClientRects().length > 0);
+      if (!h1) return false;
+      h1.setAttribute("tabindex", "-1");
+      h1.setAttribute("data-route-heading", "");
+      h1.focus({ preventScroll: true });
+      return true;
+    };
+    if (focusHeading()) return;
+    mainRef.current?.focus({ preventScroll: true });
+    const observer = new MutationObserver(() => {
+      if (focusHeading()) observer.disconnect();
+    });
+    if (mainRef.current) observer.observe(mainRef.current, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [location, onClose]);
   return (
     <Box
@@ -92,12 +108,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       bgRepeat="repeat"
       bgPosition="center"
       backgroundAttachment="fixed"
-      minH="105vh"
+      minH="100dvh"
+      overflowX="clip"
     >
       <Link
         href="#main-content"
         position="absolute"
         left="-9999px"
+        top="8px"
         bg="brand.merlot"
         color="white"
         p="3"
@@ -113,6 +131,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       >
         Skip to main content
       </Link>
+      <Box as="header">
       <SidebarContent
         onClose={onClose}
         display={{ base: "none", md: "block" }}
@@ -124,37 +143,45 @@ export default function Layout({ children }: { children: ReactNode }) {
         onOverlayClick={onClose}
         size="full"
       >
-        <DrawerContent>
+        <DrawerContent aria-label="Site menu">
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} isOpen={isOpen} />
+      </Box>
       <Image
         src={imageUrl("/images/mohammad-rahmani-LrxSl4ZxoRs-unsplash.png")}
         fetchPriority="high"
         decoding="async"
         fit={{ base: "cover", md: "fill" }}
-        w="100vw"
-        h={{ base: "165px", md: "265px" }}
-        ml={{ base: 0, md: 100 }}
+        w={{ base: "100%", md: "calc(100% - 16rem)" }}
+        h={{ base: "140px", md: "265px" }}
+        ml={{ base: 0, md: 64 }}
         alt=""
         aria-hidden="true"
       />
       <Box
         as="main"
         id="main-content"
+        ref={mainRef}
+        tabIndex={-1}
         ml={{ base: 0, md: 72 }}
         mr={{ base: 0, md: 12 }}
         position="relative"
-        mt={{ base: "25px", md: "40px" }}
-        pt="100px"
-        pl="40px"
-        pr="40px"
-        pb="50px"
-        bg="white"
+        mt={{ base: 0, md: "40px" }}
+        mb={{ base: 0, md: 12 }}
+        pt={{ base: 10, md: 16 }}
+        px={{ base: 5, sm: 8, lg: 14 }}
+        pb={{ base: 12, md: 16 }}
+        bg="brand.paper"
+        color="brand.ink"
+        borderTop="4px solid"
+        borderColor="brand.oxblood"
+        boxShadow={{ md: "0 1px 2px rgba(67,7,7,0.08), 0 12px 32px -12px rgba(67,7,7,0.25)" }}
+        minW={0}
       >
-        {children}
+        <Box maxW="72ch" mx="auto">{children}</Box>
       </Box>
     </Box>
   );
@@ -173,13 +200,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       w={{ base: "full", md: 64 }}
       pos="fixed"
       h="full"
+      overflowY="auto"
       {...rest}
     >
       <Flex
         flexDir="row"
         justifyContent="space-between"
-        alignItems="center"
-        mt="68"
+        alignItems="flex-start"
+        mt={{ base: 10, md: "68" }}
         mx="8"
       >
         <Stack>
@@ -198,6 +226,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
               {...wordmarkFont}
               fontWeight="700"
               wordBreak="normal"
+              overflowWrap="normal"
+              className="no-hyphens"
               sx={{ hyphens: "none" }}
               mb="5px"
             >
@@ -213,22 +243,22 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             </Text>
           </Link>
           <Divider mt="35px" mb="25px" />
-          <Flex flexDir="row">
-            <SocialIcon
+          <Flex as="ul" flexDir="row" listStyleType="none" m="0" p="0" aria-label="Elsewhere">
+            <li><SocialIcon
               href="https://www.linkedin.com/in/kozmary/"
               icon={AiFillLinkedin}
               label="Jordan Kozmary on LinkedIn"
-            />
-            <SocialIcon
+            /></li>
+            <li><SocialIcon
               href="https://gitlab.com/kozmary"
               icon={AiFillGitlab}
               label="Jordan Kozmary on GitLab"
-            />
-            <SocialIcon
+            /></li>
+            <li><SocialIcon
               href="mailto:kozmary@gmail.com"
               icon={AiOutlineMail}
               label="Email Jordan Kozmary"
-            />
+            /></li>
           </Flex>
           <Divider mt="25px" mb="25px" />
         </Stack>
@@ -236,14 +266,20 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           display={{ base: "flex", md: "none" }}
           color="white"
           onClick={onClose}
+          aria-label="Close menu"
+          size="lg"
           _hover={{ bg: "brand.cream", color: "brand.merlot" }}
         />
       </Flex>
-      {NavigationItems.map((nav) => (
-        <NavItem key={nav.name} link={nav.link} onClick={onClose}>
-          {nav.name}
-        </NavItem>
-      ))}
+      <Box as="ul" listStyleType="none" m="0" p="0" pb="8">
+        {NavigationItems.map((nav) => (
+          <Box as="li" key={nav.name}>
+            <NavItem link={nav.link} onClick={onClose}>
+              {nav.name}
+            </NavItem>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 };
@@ -263,21 +299,25 @@ const NavItem = ({ link, children, ...rest }: NavItemProps) => {
       fontSize="x-large"
       fontWeight="700"
       textDecoration="none"
+      display="block"
       _focus={{ boxShadow: "none" }}
       _focusVisible={{
         outline: "2px solid",
         outlineColor: "brand.cream",
-        outlineOffset: "2px",
+        outlineOffset: "-2px",
+        borderRadius: "lg",
       }}
+      _hover={{ textDecoration: "none" }}
+      sx={{ "&[aria-current=page] > div": { borderLeft: "3px solid", borderColor: "brand.cream" } }}
     >
       <Flex
+        transition="background-color 150ms ease, color 150ms ease"
         align="center"
         color="white"
         p="4"
         mx="4"
         borderRadius="lg"
-        role="group"
-        cursor="pointer"
+
         _hover={{ bg: "brand.cream", color: "brand.merlot" }}
         {...rest}
       >
@@ -289,8 +329,9 @@ const NavItem = ({ link, children, ...rest }: NavItemProps) => {
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
+  isOpen: boolean;
 }
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, isOpen, ...rest }: MobileProps) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -305,17 +346,23 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         variant="outline"
         color="white"
         onClick={onOpen}
-        aria-label="open menu"
+        aria-label="Open site menu"
+        aria-expanded={isOpen}
         icon={<FiMenu />}
+        _focusVisible={{ outline: "3px solid", outlineColor: "brand.cream", outlineOffset: "3px" }}
         _hover={{ bg: "brand.cream", color: "brand.merlot" }}
       />
-      <Link href="/" color="white">
+      <Link href="/" color="white" minW={0} _focusVisible={{ outline: "3px solid", outlineColor: "brand.cream", outlineOffset: "3px" }}>
         <Text
-          fontSize={{ base: "xl", sm: "2xl" }}
+          as="span"
+          display="block"
+          className="no-hyphens"
+          lineHeight="1.2"
+          fontSize={{ base: "lg", sm: "2xl" }}
           color="white"
           {...wordmarkFont}
           fontWeight="700"
-          ml="25px"
+          ml="4"
         >
           Jordan Kozmary, Game Developer.
         </Text>
