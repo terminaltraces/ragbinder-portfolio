@@ -1,0 +1,38 @@
+{
+  "name": "ragbinder-portfolio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:terminaltraces/ragbinder-portfolio.git",
+  "author": "Drew Kozmary <2223678+terminaltraces@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.5.5",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "dayjs": "^1.11.7",
+    "framer-motion": "^10.10.0",
+    "glob": "^9.3.4",
+    "gray-matter": "^4.0.3",
+    "next": "^15.5.21",
+    "next-mdx-remote": "^6.0.0",
+    "react": "^18.2.0",
+    "react-compare-slider": "^3.0.1",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.8.0",
+    "reading-time": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.19",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "typescript": "^4.9.5"
+  },
+  "resolutions": {
+    "**/postcss": "^8.5.23"
+  }
+}

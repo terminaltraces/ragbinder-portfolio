@@ -1,0 +1,34 @@
+---
+title: "Leveraging Unreal's Landscapes for Hex Grids"
+date: "2024-02-26"
+---
+
+# Leveraging Unreal's Landscapes for Hex Grids
+
+The terrain in the game world is represented by contiguous hexagonal tiles, placed at discrete elevation levels. The tiles are laid out in the flat-topped orientation, if you are facing along the X Axis. Because every other column of hexes is shifted up by half a hex height, the X,Y integer "coordinates" of a hex do not correspond linearly to its X,Y world position. Instead I opted to use an alternative coordinate system, called "cubic" coordinates, that uses three non-orthogonal basis vectors (Q,R,S) on the X,Y plane that allows us to maintain that property, and thus makes mathematical operations much simpler.
+
+To lay out hexagonal tiles along a 2d grid, it would be beneficial to import some sort of heightmap, so we don't have to hand-place the entire world (a daunting and pointless task). However, if we use a traditional heightmap and try to read the values into X,Y coordinates on the grid, our placed terrain would be a distorted version of the stored image (for the same reason I opted for QRS coordinates)! Rather than generating a traditional 2D heightmap in a third party tool, then hope it looks how we want it to after the distortion effect, we'll take a much simpler approach.
+
+We'll use Landscape objects, and sample the exact height of the terrain at the (X,Y) world coordinate to place individual tiles, rounding to the nearest discrete height level. This allows us to rapidly iterate on the terrain in the engine itself, simplifying the process of getting final terrain into our game.
+
+<FullWidthImage src="/images/unreal-landscape-hex-1.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-2.png" />
+
+We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.
+
+<CompareImage
+  imageOne="/images/unreal-comp-photo-image1.jpg"
+  imageOneAlt="Unreal landscape painted with terrain type materials, before hex tile placement"
+  imageTwo="/images/unreal-comp-photo-image2.jpg"
+  imageTwoAlt="The same landscape with hexagonal tiles placed at sampled elevation levels"
+/>
+
+This terrain painting relies on setting a different physics material for each type of terrain, then grabbing the material data from the raycast that also gathers the terrain height. It's useful here to group the material to tile correlation into a tileset data asset, so we can quickly swap between different parameter sets. I also set the physics material of the tile to match the one used on the landscape, so we can hold onto the terrain type data after initial map generation is done. I use this layer to implement a dynamic flocking system, where the bases under static terrain pieces have different materials applied to better blend the pieces into the terrain they're occupying.
+
+For the purposes of this demonstration I also changed the tiles to be their own classes, so I can set parameters on the different actors and keep the individual tile classes simple. This allows me to spawn foliage on a per-tile bases - grass tiles can spawn a couple grass tufts, or forest tiles will have a chance to spawn a tree.
+
+<FullWidthImage src="/images/unreal-landscape-hex-5.png" />
+
+For future work, I'd like to investigate how I can use terrain layers to encode multiple sets of data into the same terrain object, like Foliage density or water placement. If I can't use terrain layers to hold the data I want, I could just paint another flat 2D texture, and hopefully project it over the terrain so I have some visual indication of where I'm placing terrain features.
+
+I'd also like to move the terrain tiles and foliage to Instanced Static Meshes, to improve rendering performance.
