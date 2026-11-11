@@ -1,4 +1,4 @@
-import { Card, CardBody, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Image, Text } from "@chakra-ui/react";
 import { imageUrl } from "../lib/urls";
 
 export interface Experience {
@@ -8,43 +8,33 @@ export interface Experience {
   gameImage: string;
 }
 
-export default function ExperienceCard({
-  gameTitle,
-  studio,
-  gameDescription,
-  gameImage,
-}: Experience) {
+export default function ExperienceCard({ gameTitle, studio, gameDescription, gameImage }: Experience) {
   return (
-    <Card
-      direction={{ base: "column", sm: "row" }}
-      overflow="hidden"
-      variant="unstyled"
+    <Box
+      as="article"
+      display="grid"
+      gridTemplateColumns={{ base: "1fr", lg: "minmax(0, 16rem) minmax(0, 1fr)" }}
+      gap={{ base: 4, lg: 8 }}
+      w="100%"
+      minW={0}
     >
       <Image
         objectFit="cover"
-        maxW="25rem"
+        w="100%"
+        borderRadius="md"
+        sx={{ aspectRatio: "16 / 10" }}
         src={imageUrl(gameImage)}
         decoding="async"
         alt={`${gameTitle} key art`}
         loading="lazy"
       />
-      <Stack pt="4" pl="8">
-        <CardBody>
-          <Heading
-            fontWeight="700"
-            fontSize="2xl"
-            color="brand.oxblood"
-            mb="4"
-            as="h2"
-          >
-            {gameTitle}
-          </Heading>
-          <Heading fontWeight="500" fontSize="lg" mb="4" as="h3">
-            {studio}
-          </Heading>
-          <Text py="2">{gameDescription}</Text>
-        </CardBody>
-      </Stack>
-    </Card>
+      <Box minW={0}>
+        <Heading as="h2" fontSize={{ base: "xl", md: "2xl" }} lineHeight="1.25" mb="1">
+          {gameTitle}
+        </Heading>
+        <Text fontWeight="600" color="brand.muted" mb="3">{studio}</Text>
+        <Text>{gameDescription}</Text>
+      </Box>
+    </Box>
   );
 }

@@ -9,7 +9,7 @@ const IndexPage = () => {
       <Heading as="h1" fontWeight="700" color="brand.oxblood" mb="4">
         Hey, I'm Jordan.
       </Heading>
-      <Text mb="8">
+      <Text mb="10" fontSize={{ md: "lg" }}>
         I make games! I love games with deep mechanics that allow the player to
         express themselves through emergent gameplay. If it makes sense talking
         about a build in the context of your game, I'd probably love it. Board
@@ -17,7 +17,7 @@ const IndexPage = () => {
         cubes for red ones, to cooperative horror games where a scrappy group of
         adventurers takes on the elder gods.
       </Text>
-      <SimpleGrid spacing={4} columns={{ xl: 3, lg: 2 }}>
+      <SimpleGrid as="section" aria-label="Where to find my work" spacing={5} minChildWidth="15rem">
         <HomeCard
           imageSrc="/images/MWII-SEASON-01-ROADMAP-004.png"
           imageAlt="Call of Duty: Warzone season roadmap key art"

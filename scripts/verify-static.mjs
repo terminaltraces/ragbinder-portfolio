@@ -37,6 +37,23 @@ test("Pages includes a real 404, resume, custom domain, and no Jekyll processing
   await access(path.join(out, ".nojekyll"));
 });
 
+test("static pages retain accessible landmarks, headings, images, and publication dates", async () => {
+  for (const route of [...routes, "/404"]) {
+    const html = await readFile(route === "/404" ? path.join(out, "404.html") : path.join(out, route, "index.html"), "utf8");
+    assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `${route}: one page heading`);
+    assert.equal((html.match(/<main\b/g) ?? []).length, 1, `${route}: one main landmark`);
+    assert.match(html, /<main\b[^>]*id="main-content"[^>]*tabindex="-1"/, `${route}: focusable skip target`);
+    assert.match(html, /href="#main-content"/, `${route}: skip link`);
+    for (const image of html.matchAll(/<img\b[^>]*>/g)) {
+      assert.match(image[0], /\balt="[^"]*"/, `${route}: image alternative`);
+    }
+    if (route.startsWith("/writing/")) {
+      assert.match(html, /<article\b/, `${route}: article landmark`);
+      assert.match(html, /<time\b[^>]*dateTime="\d{4}-\d{2}-\d{2}"/i, `${route}: machine-readable date`);
+    }
+  }
+});
+
 test("initial JavaScript does not contain every article body", async () => {
   const html = await readFile(path.join(out, "index.html"), "utf8");
   const script = html.match(/<script[^>]*src="([^"]+)"/)?.[1];

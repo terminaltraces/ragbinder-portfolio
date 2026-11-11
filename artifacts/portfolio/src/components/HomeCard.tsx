@@ -1,14 +1,4 @@
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Heading,
-  Image,
-  LinkBox,
-  LinkOverlay,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Heading, Image, LinkBox, LinkOverlay, Text } from "@chakra-ui/react";
 import { Link as RouterLink } from "wouter";
 import { imageUrl } from "../lib/urls";
 
@@ -20,60 +10,57 @@ interface HomeCardProps {
   title: string;
 }
 
-/**
- * The LinkBox/Card/LinkOverlay pattern from the home page, parameterized.
- * New homepage cards are now ~6 lines of data instead of 35 lines of JSX.
- */
-export default function HomeCard({
-  imageSrc,
-  imageAlt,
-  href,
-  label,
-  title,
-}: HomeCardProps) {
+/** Whole-card link with one accessible name (label + title); image is decorative. */
+export default function HomeCard({ imageSrc, href, label, title }: HomeCardProps) {
+  const internal = href.startsWith("/");
   return (
-    <LinkBox>
-      <Card
-        direction={{ base: "column", sm: "row" }}
-        overflow="hidden"
-        variant="unstyled"
+    <LinkBox
+      as="article"
+      position="relative"
+      overflow="hidden"
+      borderRadius="lg"
+      bg="brand.merlot"
+      minW={0}
+      sx={{
+        "&:hover img": { opacity: 0.85 },
+        "&:focus-within": { outline: "3px solid", outlineColor: "brand.rust", outlineOffset: "3px" },
+      }}
+    >
+      <Image
+        objectFit="cover"
+        w="100%"
+        sx={{ aspectRatio: "3 / 2" }}
+        src={imageUrl(imageSrc)}
+        htmlWidth={419}
+        htmlHeight={279}
+        decoding="async"
+        alt=""
+        loading="lazy"
+        transition="opacity 200ms ease"
+      />
+      <Box
+        position="absolute"
+        insetX={0}
+        bottom={0}
+        px={4}
+        pt={10}
+        pb={4}
+        bgGradient="linear(to-t, rgba(42,8,8,0.94) 45%, rgba(42,8,8,0))"
       >
-        <Stack>
-          <CardBody>
-            <Image
-              objectFit="cover"
-              maxW="100%"
-              src={imageUrl(imageSrc)}
-              htmlWidth={419}
-              htmlHeight={279}
-              height="auto"
-              decoding="async"
-              alt={imageAlt}
-              loading="lazy"
-            />
-          </CardBody>
-          <CardFooter
-            bg="black"
-            opacity={0.7}
-            pos="absolute"
-            p={4}
-            bottom={0}
-            left={0}
-            borderRadius="xl"
+        <Text color="brand.cream" fontWeight={600} fontSize="sm" letterSpacing="0.04em" mb={1}>
+          {label}
+        </Text>
+        <Heading as="h2" size="md" color="white" lineHeight="1.2">
+          <LinkOverlay
+            as={internal ? RouterLink : "a"}
+            href={href}
+            {...(!internal && { rel: "noopener noreferrer" })}
+            _focusVisible={{ outline: "none" }}
           >
-            <LinkOverlay as={href.startsWith("/") ? RouterLink : "a"} href={href}>
-              <Stack>
-                <Text color="white" fontWeight={600}>
-                  {label}
-                </Text>
-                <Heading marginTop={0} color="white">
-                  {title}
-                </Heading>
-              </Stack>
-            </LinkOverlay>
-          </CardFooter>
-        </Stack>
-      </Card>
+            {title}
+          </LinkOverlay>
+        </Heading>
+      </Box>
     </LinkBox>
   );
 }

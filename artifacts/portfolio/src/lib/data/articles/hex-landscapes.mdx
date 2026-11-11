@@ -11,8 +11,8 @@ To lay out hexagonal tiles along a 2d grid, it would be beneficial to import som
 
 We'll use Landscape objects, and sample the exact height of the terrain at the (X,Y) world coordinate to place individual tiles, rounding to the nearest discrete height level. This allows us to rapidly iterate on the terrain in the engine itself, simplifying the process of getting final terrain into our game.
 
-<FullWidthImage src="/images/unreal-landscape-hex-1.png" />
-<FullWidthImage src="/images/unreal-landscape-hex-2.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-1.png" alt="Unreal landscape used to sample terrain height for hexagonal tile placement" />
+<FullWidthImage src="/images/unreal-landscape-hex-2.png" alt="Hexagonal terrain generated from sampled landscape heights" />
 
 We also have at our disposal the additional features that accompany Unreal Landscapes. We can encode data about the environment in the terrain material. This lets us paint terrain types directly onto the landscape, so we can get a preview of our results before we do the actual heavy generation step.
 
@@ -27,7 +27,7 @@ This terrain painting relies on setting a different physics material for each ty
 
 For the purposes of this demonstration I also changed the tiles to be their own classes, so I can set parameters on the different actors and keep the individual tile classes simple. This allows me to spawn foliage on a per-tile bases - grass tiles can spawn a couple grass tufts, or forest tiles will have a chance to spawn a tree.
 
-<FullWidthImage src="/images/unreal-landscape-hex-5.png" />
+<FullWidthImage src="/images/unreal-landscape-hex-5.png" alt="Landscape terrain types mapped onto the hexagonal game grid" />
 
 For future work, I'd like to investigate how I can use terrain layers to encode multiple sets of data into the same terrain object, like Foliage density or water placement. If I can't use terrain layers to hold the data I want, I could just paint another flat 2D texture, and hopefully project it over the terrain so I have some visual indication of where I'm placing terrain features.
 

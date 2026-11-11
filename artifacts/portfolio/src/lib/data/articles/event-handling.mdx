@@ -45,7 +45,7 @@ My second attempt was an overreaction to the pain of having to maintain a tediou
 Third time's the charm, and the culmination of this month's work is a system that takes the benefits of both extremes (everything is an event handler | only one event handler), while having the drawbacks of neither, while making ease of use a first-class concern.
 To address the problems from the first attempt, I implemented all of this functionality in a new class named GameplayEventMessageBroadcaster. Pawns are given an instance of this object, and in addition each Spell and Attack object get an instance. When a spell or attack isn't active (i.e. not equipped), its MessageBroadcaster is deregistered and it doesn't receive or forward new gameplay events.
 
-# Key Elements of Final Implementation
+## Key Elements of Final Implementation
 ## Message Broadcaster Node Objects
 When this object broadcasts a message, it automatically repeats to the parent Message Broadcaster, if it exists. This convention allows me to avoid a whole class of infinite message loop bugs, which was a constant concern with the first approach.
 TODO: put this in a collapsible code snippet control
@@ -56,8 +56,8 @@ This topology is much simpler to maintain than the "everything is an event handl
 
 ## Effect Trigger and Triggered Effect objects
 This is all well and good in theory, but how do designers actually subscribe to all of these abstract event streams? For that, I provide a suite of TriggeredEffect classes, one for each different category of events that can be subscribed to. The designer simply needs to pick one of the triggers below to specify when their event should trigger:
-<FullWidthImage src="/images/TriggerEventDropdown.png" />
+<FullWidthImage src="/images/TriggerEventDropdown.png" alt="Unreal editor dropdown for selecting which event triggers an effect" />
 They must then pick a triggered effect that corresponds to that type of trigger:
-<FullWidthImage src="/images/TriggeredEffectDropdown.png" />
+<FullWidthImage src="/images/TriggeredEffectDropdown.png" alt="Unreal editor dropdown for selecting an effect compatible with the chosen event trigger" />
 The events implemented at the time of writing are all pointed at the Spell Object's Message Broadcaster. For events that want to listen to the Pawn's event center instead, it's a simple matter of adding a new trigger class for that event scope.
 Having these triggering events and their related effects separated by type allows me to make it incredibly easy for designers to use this system, since they can only choose from valid options when setting up data assets for spell upgrades, and the entire set of valid options is presented to them in a searchable dropdown box in the editor.
