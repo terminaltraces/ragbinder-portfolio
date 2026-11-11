@@ -147,7 +147,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         ml={{ base: 0, md: 72 }}
         mr={{ base: 0, md: 12 }}
         position="relative"
-        top={{ base: "25px", md: "40px" }}
+        mt={{ base: "25px", md: "40px" }}
         pt="100px"
         pl="40px"
         pr="40px"
