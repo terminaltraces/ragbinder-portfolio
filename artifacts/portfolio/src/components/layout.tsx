@@ -197,6 +197,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
               color="white"
               {...wordmarkFont}
               fontWeight="700"
+              wordBreak="normal"
+              sx={{ hyphens: "none" }}
               mb="5px"
             >
               Jordan Kozmary,
