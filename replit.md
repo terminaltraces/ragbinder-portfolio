@@ -19,6 +19,7 @@ Portfolio for a video game developer and senior software engineer, with industry
 - Build output includes rendered HTML for every route and a real `404.html`; no server, redirect workaround, or hash routing is needed.
 - `BASE_PATH` defaults to `/`. The workflow reads GitHub Pages' configured base path, so repository subpaths work too.
 - Do not reactivate the old Next.js workflow under `.migration-backup/`.
+- The archive retains source and assets only. Its obsolete package manifest and Yarn lockfile were retired with the owner's approval; Git history preserves them.
 - This project must remain usable on GitHub Pages as a static site; retain its visual design when improving performance or structure.
 
 ## Stack
