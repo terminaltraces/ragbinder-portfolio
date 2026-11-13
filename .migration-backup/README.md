@@ -1,6 +1,17 @@
 # ragbinder.github.io
 Personal portfolio website and development blog.
 
+## Historical source only
+
+This directory preserves the original Next.js source and assets for comparison.
+It is not installed, built, or deployed. The retired package manifest and Yarn
+lockfile were removed with the project owner's approval; Git history retains
+them if needed. Do not restore them as active dependency files: their obsolete
+dependency tree is not maintained.
+
+Use `artifacts/portfolio` and the root pnpm workspace for the maintained site.
+The setup notes below describe the historical application, not current commands.
+
 # Credits
 Thank you to the following resources for making this project possible:
 * [Chakra Templates](https://chakra-templates.dev/)

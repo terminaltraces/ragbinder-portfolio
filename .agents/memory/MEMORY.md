@@ -1,0 +1,1 @@
+- [Catalog upgrade resolution](catalog-upgrades.md) — pnpm can retain an old catalog resolution after the requested version changes; verify resolved versions.
